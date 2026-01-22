@@ -1,0 +1,30 @@
+:root {
+    --primary: #0057e6;
+    --secondary: #7931dc;
+    --success: #40d639;
+    --warning: #fd7c05;
+    --danger: #ff3a3a;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+.text-secondary {
+    color: var(--secondary) !important;
+}
+
+.text-success {
+    color: var(--success) !important;
+}
+
+.text-info {
+    color: var(--info) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}

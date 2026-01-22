@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CoreProductIncomeProducts extends Model
+class CoreIncomingProduct extends Model
 {
     use HasFactory;
 
-    protected $table = 'core_product_income_products';
-
+    protected $table = 'core_incoming_products';
     // Enable auto-incrementing for 'id' primary key
     public $incrementing = true;
 

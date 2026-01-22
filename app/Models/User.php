@@ -21,8 +21,22 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
+        'role',
     ];
+    public function isOwner(): bool
+    {
+        return $this->role === 'owner';
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'owner']);
+    }
+
+    public function isPetugas(): bool
+    {
+        return in_array($this->role, ['petugas', 'admin', 'owner']);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

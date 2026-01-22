@@ -1,21 +1,56 @@
 {
-    "$schema": "https://www.schemastore.org/package.json",
+    "$schema": "https://json.schemastore.org/package.json",
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "build": "npm run clean && npm run build:client && npm run build:ssr",
+        "build:client": "vite build",
+        "build:ssr": "vite build --ssr",
+        "build:production": "npm run clean:force && npm run build:client && npm run build:ssr && php artisan optimize --no-interaction",
+        "dev": "vite",
+        "clean": "rimraf bootstrap/ssr/assets public/build node_modules/.vite",
+        "clean:force": "powershell -ExecutionPolicy Bypass -File scripts/force-build.ps1 -Clean",
+        "build:windows": "powershell -ExecutionPolicy Bypass -File scripts/force-build.ps1",
+        "lint": "eslint resources/js --ext .js,.vue --ignore-path .gitignore --fix",
+        "format": "prettier --write ."
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
-        "@vitejs/plugin-vue": "^6.0.3",
-        "axios": "^1.11.0",
+        "@html-eslint/eslint-plugin": "^0.46.1",
+        "@html-eslint/parser": "^0.46.0",
+        "@inertiajs/vue3": "^2.0.0",
+        "@rushstack/eslint-patch": "^1.8.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/vite": "^4.1.18",
+        "@vitejs/plugin-vue": "^5.2.4",
+        "@vue/eslint-config-prettier": "^9.0.0",
+        "@vue/server-renderer": "^3.4.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.8.2",
         "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "eslint-plugin-tailwindcss": "^3.18.2",
+        "eslint-plugin-unused-imports": "^4.2.0",
+        "eslint-plugin-vue": "^9.23.0",
+        "laravel-vite-plugin": "^1.2.0",
+        "postcss": "^8.4.31",
+        "prettier": "^3.6.2",
+        "prettier-plugin-organize-imports": "^4.2.0",
+        "prettier-plugin-tailwindcss": "^0.6.14",
+        "rimraf": "^6.0.1",
+        "tailwindcss": "^3.4.19",
+        "typescript": "^5.9.2",
+        "vite": "^6.2.4",
+        "vue": "^3.5.26",
+        "vue-tsc": "^3.0.6"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^2.3.10"
+        "@fortawesome/fontawesome-free": "^7.0.0",
+        "datatables.net-bs5": "^2.3.2",
+        "datatables.net-vue3": "^3.0.4",
+        "sweetalert2": "^11.22.2",
+        "vue-router": "^4.6.4",
+        "vue3-toastify": "^0.2.8"
     }
 }

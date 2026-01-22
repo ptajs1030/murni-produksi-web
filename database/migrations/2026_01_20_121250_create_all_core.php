@@ -97,7 +97,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('core_products')->onDelete('cascade');
             $table->boolean('expired_notification_sent')->default(false);
-            $table->foreignId('head_office_id')->constrained('m_head_offices');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
