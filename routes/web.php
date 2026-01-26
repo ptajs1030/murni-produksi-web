@@ -26,6 +26,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', \App\Http\Controllers\UserController::class);
         Route::resource('categories', \App\Http\Controllers\MCategoryController::class);
         Route::resource('suppliers', \App\Http\Controllers\MSupplierController::class);
+        Route::resource('property-items', \App\Http\Controllers\MPropertyItemController::class);
+        Route::resource('packaging-size-levels', \App\Http\Controllers\MPackagingSizeLevelController::class);
+        Route::resource('packaging-size-types', \App\Http\Controllers\MPackagingSizeTypeController::class);
+        Route::resource('packaging-types', \App\Http\Controllers\MPackagingTypeController::class);
+        Route::resource('repack-status', \App\Http\Controllers\MRepackStatusController::class);
     });
 });
 

@@ -212,7 +212,7 @@ class CoreProduct extends Model
      */
     public function incomeProducts()
     {
-        return $this->hasMany(CoreProductIncomeProducts::class, 'product_id');
+        return $this->hasMany(CoreIncomingProduct::class, 'product_id');
     }
 
     /**
@@ -280,6 +280,6 @@ class CoreProduct extends Model
     // Relationship dengan stok
     public function stocks()
     {
-        return $this->hasMany(CoreStok::class, 'product_id');
+        return $this->hasMany(CoreStock::class, 'product_id');
     }
 }

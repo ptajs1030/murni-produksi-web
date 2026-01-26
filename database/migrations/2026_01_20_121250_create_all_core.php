@@ -67,7 +67,6 @@ return new class extends Migration
 
             // Foreign key relationships
             $table->foreignId('product_id')->constrained('core_products')->onDelete('cascade')->comment('FK ke table core_products, cascade delete');
-            $table->foreignId('warehouse_id')->constrained('m_warehouses')->onDelete('cascade')->comment('FK ke table m_warehouses, cascade delete');
 
             // Stock management columns
             $table->integer('in_stock')->default(0)->comment('Jumlah stok tersedia (integer, default 0)');
@@ -89,8 +88,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // Unique constraint: one stock record per product per warehouse
-            $table->unique(['product_id', 'warehouse_id'], 'core_stok_unique_index');
+            // Unique constraint: one stock record per product
+            $table->unique(['product_id'], 'core_stoks_product_unique');
         });
 
         Schema::create('core_notifikasi_expired', function (Blueprint $table) {
@@ -105,7 +104,6 @@ return new class extends Migration
 
         Schema::create('core_stock_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('warehouse_id')->constrained('m_warehouses')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('core_products')->onDelete('cascade');
             $table->foreignId('transaction_type_id')->constrained('m_transaction_types')->comment('IN, OUT')->onDelete('cascade');
             $table->decimal('quantity', 10, 2);
@@ -116,14 +114,13 @@ return new class extends Migration
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
             $table->timestamps();
             $table->softDeletes();
-            $table->index(['warehouse_id', 'product_id'], 'core_stock_transactions_wpu_index');
+            $table->index('product_id');
             $table->index('transaction_date');
         });
 
         Schema::create('core_incoming_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('core_products')->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained('m_warehouses')->cascadeOnDelete();
             $table->integer('stock');
             $table->decimal('packaging_size_input', 15, 2)->nullable();
             $table->bigInteger('price')->nullable();
@@ -134,7 +131,6 @@ return new class extends Migration
         Schema::create('core_outgoing_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('core_products')->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained('m_warehouses')->cascadeOnDelete();
             $table->foreignId('out_type_id')->constrained('m_out_types')->cascadeOnDelete();
             $table->integer('stock');
             $table->decimal('packaging_size_input', 15, 2)->nullable();
@@ -145,7 +141,6 @@ return new class extends Migration
 
         Schema::create('core_stock_opname', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('warehouse_id')->constrained('m_warehouses');
             $table->integer('total_request');
             $table->date('date_request');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDeleteNull();

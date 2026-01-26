@@ -8,12 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('role_name')->unique();
-            $table->timestamps();
-            $table->softDeletes();
-        });
         Schema::create('m_packaging_size_types', function (Blueprint $table) {
             $table->id(); 
             $table->string('type_code')->unique();
@@ -27,17 +21,6 @@ return new class extends Migration
         });
 
         Schema::create('m_packaging_levels', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('level_code')->unique();
-            $table->string('level_description', 100)->nullable();
-            $table->foreignId('created_by')->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
-            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::create('m_warehouse_levels', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('level_code')->unique();
             $table->string('level_description', 100)->nullable();
@@ -118,17 +101,6 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('m_warehouses', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('warehouse_level_id')->constrained('m_warehouse_levels'); // parent
-            $table->string('warehouse_name');
-            $table->foreignId('created_by')->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
-            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
-
-            $table->timestamps();
-            $table->softDeletes();
-        });
 
         Schema::create('m_out_types', function (Blueprint $table) {
             $table->id();

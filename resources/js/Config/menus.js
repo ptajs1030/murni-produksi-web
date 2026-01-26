@@ -50,7 +50,7 @@ export const MENUS = [
             {
                 name: "Sifat Benda",
                 icon: "fa fa-flask",
-                route: "products.index",
+                route: "property-items.index",
                 roles: ["owner", "admin"],
             },
             {
@@ -62,13 +62,13 @@ export const MENUS = [
             {
                 name: "Wadah Packaging",
                 icon: "fa fa-box",
-                route: "products.index",
+                route: "packaging-types.index",
                 roles: ["owner", "admin"],
             },
             {
                 name: "Repack status",
                 icon: "fa fa-retweet",
-                route: "products.index",
+                route: "repack-status.index",
                 roles: ["owner", "admin"],
             },
         ],
@@ -100,13 +100,13 @@ export const MENUS = [
             {
                 name: "Packing Level",
                 icon: "fas fa-layer-group",
-                route: "packaging-levels.index",
+                route: "packaging-size-levels.index",
                 roles: ["owner", "admin"],
             },
             {
                 name: "Ukuran Packing Type",
                 icon: "fas fa-layer-group",
-                route: "packaging-types.index",
+                route: "packaging-size-types.index",
                 roles: ["owner", "admin"],
             },
             {
