@@ -21,26 +21,31 @@ class UserSeeder extends Seeder
             'name' => 'Pemilik Sistem',
             'email' => 'owner@mail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('password123'), // Ganti dengan password yang aman
+            'password' => bcrypt('password'), // Ganti dengan password yang aman
             'role' => 'owner',
         ]);
 
         // 2. Admin (3 orang)
         $admins = [
             [
+                'name' => 'admin',
+                'email' => 'admin@mail.com',
+                'password' => bcrypt('password'),
+            ],
+            [
                 'name' => 'Admin Utama',
                 'email' => 'admin1@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Admin Dua',
                 'email' => 'admin2@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Admin Tiga',
                 'email' => 'admin3@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
         ];
 
@@ -57,27 +62,27 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Petugas Satu',
                 'email' => 'petugas1@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Petugas Dua',
                 'email' => 'petugas2@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Petugas Tiga',
                 'email' => 'petugas3@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Petugas Empat',
                 'email' => 'petugas4@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
             [
                 'name' => 'Petugas Lima',
                 'email' => 'petugas5@mail.com',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('password'),
             ],
         ];
 
@@ -91,6 +96,6 @@ class UserSeeder extends Seeder
 
         $this->command->info('Seeder berhasil dijalankan!');
         $this->command->info('Total user yang dibuat: ' . User::count());
-        $this->command->info('Owner: 1, Admin: 3, Petugas: 5, User: 1');
+        $this->command->info('Owner: 1, Admin: 4, Petugas: 5, User: 1');
     }
 }
