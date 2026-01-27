@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CoreRecipe extends Model
 {
+    use HasFactory;
     protected $table = 'core_recipes';
 
     // Enable auto-incrementing for 'id' primary key

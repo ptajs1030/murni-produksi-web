@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         MTransactionTypeSeeder::class,
             CoreProductSeeder::class,
             CoreStockSeeder::class,
+            CoreRecipeSeeder::class,
         ]);
     }
 }
