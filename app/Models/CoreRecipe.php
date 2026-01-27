@@ -25,4 +25,12 @@ class CoreRecipe extends Model
     {
         return $this->hasMany(CoreIngredient::class, 'recipe_id');
     }
+
+    /**
+     * Relasi ke Product
+     */
+    public function product()
+    {
+        return $this->belongsTo(CoreProduct::class, 'product_id');
+    }
 }

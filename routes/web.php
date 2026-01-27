@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CoreIncomingProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -31,6 +32,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('packaging-size-types', \App\Http\Controllers\MPackagingSizeTypeController::class);
         Route::resource('packaging-types', \App\Http\Controllers\MPackagingTypeController::class);
         Route::resource('repack-status', \App\Http\Controllers\MRepackStatusController::class);
+        Route::resource('products', \App\Http\Controllers\CoreProductController::class);
+        Route::resource('recipes', \App\Http\Controllers\CoreRecipeController::class);
+        Route::get('incoming-goods', [CoreIncomingProductController::class, 'index'])->name('incoming-goods.index');
+        Route::post('incoming-goods', [CoreIncomingProductController::class, 'store'])->name('incoming-goods.store');
     });
 });
 

@@ -13,9 +13,13 @@
     <!-- Nucleo Icons -->
     {{-- <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
         <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" /> --}}
-    <!-- Scripts -->
+    <!-- Scripts & Styles -->
     @routes
-    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js',
+        "resources/js/Pages/{$page['component']}.vue"
+    ])
     @inertiaHead
 </head>
 

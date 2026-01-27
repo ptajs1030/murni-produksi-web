@@ -74,25 +74,6 @@ export const MENUS = [
         ],
     },
     {
-        name: "Master Data Gudang",
-        icon: "fas fa-warehouse",
-        roles: ["owner", "admin"],
-        children: [
-            {
-                name: "Gudang",
-                icon: "fas fa-warehouse",
-                route: "warehouses.index",
-                roles: ["owner", "admin"],
-            },
-            {
-                name: "Gudang Level",
-                icon: "fas fa-layer-group",
-                route: "stock-opnames.index",
-                roles: ["owner", "admin"],
-            },
-        ],
-    },
-    {
         name: "Master Data Transaction",
         icon: "fas fa-exchange-alt",
         roles: ["owner", "admin"],
