@@ -5,17 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\RepackController; // Added this line
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [DashboardController::class,'index']);
+    Route::get('/product', [ProductController::class,'index']);
+    Route::post('/logout', [LoginController::class, 'logout']); // Ensure logout is here
+    Route::post('/repack', [RepackController::class, 'repack']); // Added this line
     Route::middleware('admin, owner')->group(function () {
+        
 
     });
 
 });
 Route::post('/login', [LoginController::class, 'login']);
-Route::get('/dashboard', [DashboardController::class,'index']);
-Route::get('/product', [ProductController::class,'index']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [LoginController::class, 'logout']);
-});
