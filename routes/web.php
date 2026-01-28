@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CoreIncomingProductController;
+use App\Http\Controllers\CoreOutgoingProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('recipes', \App\Http\Controllers\CoreRecipeController::class);
         Route::get('incoming-goods', [CoreIncomingProductController::class, 'index'])->name('incoming-goods.index');
         Route::post('incoming-goods', [CoreIncomingProductController::class, 'store'])->name('incoming-goods.store');
+        Route::get('outgoing-goods', [CoreOutgoingProductController::class, 'index'])->name('outgoing-goods.index');
+        Route::post('outgoing-goods', [CoreOutgoingProductController::class, 'store'])->name('outgoing-goods.store');
     });
 });
 
