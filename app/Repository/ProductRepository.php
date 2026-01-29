@@ -39,6 +39,6 @@ class ProductRepository
             )
             ->whereNull('deleted_at')
             ->orderBy('id', 'asc')
-            ->get();
+            ->paginate($dto->per_page);
     }
 }

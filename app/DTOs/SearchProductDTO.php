@@ -12,6 +12,7 @@ class SearchProductDTO
         public ?int $category_id,
         public ?int $supplier_id,
         public ?bool $is_pre_order,
+        public int $per_page
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -21,7 +22,8 @@ class SearchProductDTO
             $request->query('keyword'),
             $request->query('category_id'),
             $request->query('supplier_id'),
-            $request->query('is_pre_order')
+            $request->query('is_pre_order'),
+            (int) $request->query('per_page', 10)
         );
     }
 }

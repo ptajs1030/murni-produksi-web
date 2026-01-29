@@ -19,10 +19,17 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $dto = SearchProductDTO::fromRequest($request);
+        $products = $this->productService->searchProducts($dto);
 
         return response()->json([
             'status' => true,
-            'data' => $this->productService->searchProducts($dto)
+            'data' => $products->items(),
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'per_page'     => $products->perPage(),
+                'total'        => $products->total(),
+                'last_page'    => $products->lastPage(),
+            ]
         ]);
     }
 }
