@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\DTOs\RecipeCreateDTO;
 use App\DTOs\RecipeItemDTO;
 use App\Service\RecipeService;
+use App\Http\Resources\RecipeDetailResource;
 
 class RecipeController extends Controller
 {
@@ -15,7 +16,9 @@ class RecipeController extends Controller
         if ($request->filled('id')) {
             return response()->json([
                 'status' => true,
-                'data' => $service->getDetail((int) $request->query('id'))
+                'data' => new RecipeDetailResource(
+                    $service->getDetail((int) $request->query('id'))
+                )
             ]);
         }
 
