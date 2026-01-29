@@ -41,4 +41,8 @@ class Product extends Model
         'expired_date' => 'date',
         'target_selling_date' => 'date',
     ];
+    public function category()
+{
+    return $this->belongsTo(ProductCategory::class, 'category_id');
+}
 }
