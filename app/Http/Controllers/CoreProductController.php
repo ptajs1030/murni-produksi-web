@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\CoreProduct;
 use App\Models\CoreProductImage;
+use App\Models\CoreStock;
 use App\Traits\HandlesImageUploads;
 use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
 
 class CoreProductController extends Controller
 {
@@ -38,7 +40,7 @@ class CoreProductController extends Controller
     public function edit(CoreProduct $product)
     {
         $product->load(['productImages', 'primaryImage']);
-        // dd($product);
+
 
         return Inertia::render('CoreProducts/Edit', array_merge(
             ['product' => $product],
@@ -51,7 +53,7 @@ class CoreProductController extends Controller
         $validated = $request->validated();
         $validated['created_by'] = auth()->id();
 
-        // Remove images from validated data karena tidak ada di tabel core_products
+
         unset($validated['images']);
         unset($validated['deleted_images']);
 
@@ -144,5 +146,42 @@ class CoreProductController extends Controller
             $image->deleteImageFile();
             $image->delete();
         }
+    }
+
+    public function stockDetails(CoreProduct $product)
+    {
+        $stockDetails = CoreStock::with([
+            'product.packagingSize.sizeType:id,base_unit',
+            'product.packagingSize:id,packaging_size_name,unit_conversion_value,packaging_size_type_id',
+        ])
+            ->where('product_id', $product->id)
+            ->get()
+            ->map(function ($stock) {
+                return [
+                    'stock' => [
+                        'in_stock' => $stock->in_stock,
+                        'packaging_size_input' => $stock->packaging_size_input,
+                        'real_quantity_smallest_unit' => $stock->real_quantity_in_smallest_unit,
+                        'formatted_quantity' => $stock->formatted_quantity,
+                        'track_stock' => $stock->track_stock,
+                        'stock_alert' => $stock->stock_alert,
+                        'track_alert' => $stock->track_alert,
+                        'cost_amount' => $stock->cost_amount,
+                    ],
+                ];
+            });
+   
+
+
+        return response()->json([
+            'product' => [
+                'id' => $product->id,
+                'product_code' => $product->product_unit_sku,
+                'product_name' => $product->product_name,
+                'packaging_size' => $product->packagingSize?->packaging_size_name,
+                'packaging_type' => $product->packagingType?->packaging_type_name,
+            ],
+            'stock_details' => $stockDetails,
+        ]);
     }
 }

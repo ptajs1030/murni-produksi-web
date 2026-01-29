@@ -155,10 +155,13 @@ return new class extends Migration
             $table->foreignId(column: 'stock_opname_id')->constrained('core_stock_opname')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('core_products')->cascadeOnDelete();
             $table->foreignId(column: 'stock_id')->constrained('core_stoks')->cascadeOnDelete();
-            $table->enum('status', ['SESUAI', 'TIDAK SESUAI', 'SELESAI', 'PENDING']);
+            $table->enum('status', ['APPROVED', 'REJECTED', 'PENDING'])->default('PENDING');
             $table->integer('real_quantity');
             $table->integer('expired_quantity');
             $table->text('description')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDeleteNull();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
             $table->timestamps();
             $table->unique(['stock_opname_id', 'product_id']);
         });

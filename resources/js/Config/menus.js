@@ -1,5 +1,6 @@
 
 
+
 export const MENUS = [
     {
         name: "Dashboard",
@@ -56,7 +57,7 @@ export const MENUS = [
             {
                 name: "Ukuran Packaging",
                 icon: "fa fa-ruler",
-                route: "products.index",
+                route: ".index",
                 roles: ["owner", "admin"],
             },
             {
@@ -115,6 +116,18 @@ export const MENUS = [
         roles: ["owner", "admin"],
     },
     {
+        name: "Produksi",
+        icon: "fas fa-industry",
+        route: "productions.index",
+        roles: ["owner", "admin"],
+    },
+    {
+        name:"Repack",
+        icon:"fas fa-retweet",
+        route:"repacks.index",
+        roles:["owner","admin"],
+    },
+    {
         name: "Stock & History",
         icon: "fas fa-clipboard-list",
         roles: ["owner", "admin"],
@@ -123,7 +136,7 @@ export const MENUS = [
         name: "Stock Opname",
         icon: "fas fa-clipboard-check",
         route: "stock-opnames.index",
-        roles: ["owner"],
+        roles: ["owner","admin"],
     },
     {
         name: "Produk Expired",

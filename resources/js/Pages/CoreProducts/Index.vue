@@ -2,7 +2,7 @@
 import Pagination from '@/Components/Pagination.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
+import ProductStockDetail from '@/Pages/CoreProducts/ProductStockDetail.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -11,6 +11,7 @@ const props = defineProps(['products', 'filters']);
 const search = ref(props.filters.search || '');
 const currentSort = ref('');
 const sortDirection = ref('');
+const stockDetailModalRef = ref(null);
 
 // Parse current sort from URL
 const initializeSort = () => {
@@ -113,6 +114,9 @@ const deleteProduct = id => {
     proxy.$confirmDelete('/products', id);
 };
 
+const openStockDetail = product => {
+    stockDetailModalRef.value.open(product.id);
+};
 
 // Clear all filters
 const clearFilters = () => {
@@ -239,6 +243,13 @@ const hasActiveFilters = computed(() => {
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group">
                                     <button
+                                        @click="openStockDetail(product)"
+                                        class="btn btn-outline-info"
+                                        title="Detail Stock"
+                                    >
+                                        <i class="fas fa-boxes"></i>
+                                    </button>
+                                    <button
                                         @click="openEditProduct(product)"
                                         class="btn btn-outline-warning"
                                         title="Edit Produk"
@@ -265,7 +276,8 @@ const hasActiveFilters = computed(() => {
             <Pagination :links="products.links" />
         </div>
 
-
+        <!-- Stock Detail Modal -->
+        <ProductStockDetail ref="stockDetailModalRef" />
     </AuthenticatedLayout>
 </template>
 
