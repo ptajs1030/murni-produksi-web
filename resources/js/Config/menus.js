@@ -57,7 +57,7 @@ export const MENUS = [
             {
                 name: "Ukuran Packaging",
                 icon: "fa fa-ruler",
-                route: ".index",
+                route: "packaging-sizes.index",
                 roles: ["owner", "admin"],
             },
             {
@@ -124,7 +124,7 @@ export const MENUS = [
     {
         name:"Repack",
         icon:"fas fa-retweet",
-        route:"repacks.index",
+        route:"repack.index",
         roles:["owner","admin"],
     },
     {
@@ -141,7 +141,7 @@ export const MENUS = [
     {
         name: "Produk Expired",
         icon: "fas fa-calendar-times",
-        route: "expired-products.index",
+        route: "product-expired.index",
         roles: ["owner", "admin"],
     },
 ];

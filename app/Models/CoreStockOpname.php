@@ -19,6 +19,7 @@ class CoreStockOpname extends Model
         return [
             'date_request' => 'date:Y-m-d', // Format eksplisit
             'total_request' => 'integer',
+            'is_submitted' => 'boolean',
         ];
     }
 
