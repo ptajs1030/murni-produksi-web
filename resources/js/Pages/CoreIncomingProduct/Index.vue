@@ -117,19 +117,21 @@ const updateStatus = async (id, status, productName) => {
     <Head title="Barang Datang" />
 
     <AuthenticatedLayout title="Barang Datang">
-        <!-- Filter -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label">Pencarian</label>
+        <!-- Header -->
+        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+            <div class="p-3 text-gray-900">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                >
+                    <div class="d-flex align-items-center gap-3">
                         <TextInput
+                            id="search"
                             v-model="search"
                             type="text"
+                            class="form-control"
                             placeholder="Cari berdasarkan nama produk..."
+                            style="width: 350px"
                         />
-                    </div>
-                    <div class="col-md-2">
                         <button
                             v-if="hasActiveFilters"
                             type="button"
@@ -140,29 +142,15 @@ const updateStatus = async (id, status, productName) => {
                             Clear
                         </button>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            @click="openAddModal"
-                        >
-                            <i class="fas fa-plus me-1"></i>
-                            Tambah Barang Datang
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        @click="openAddModal"
+                    >
+                        <i class="fas fa-plus me-1"></i>
+                        Tambah Barang Datang
+                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Results info -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="text-muted">
-                Menampilkan {{ incoming?.from ?? 0 }} -
-                {{ incoming?.to ?? 0 }} dari {{ incoming?.total ?? 0 }} data
-            </div>
-            <div v-if="hasActiveFilters" class="text-muted">
-                <i class="fas fa-filter me-1"></i>
-                Filter aktif
             </div>
         </div>
 

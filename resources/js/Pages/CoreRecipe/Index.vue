@@ -1,27 +1,27 @@
 <script setup>
-import Pagination from '@/Components/Pagination.vue';
-import TextInput from '@/Components/TextInput.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Pagination from "@/Components/Pagination.vue";
+import TextInput from "@/Components/TextInput.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
-import { Head, router } from '@inertiajs/vue3';
-import { debounce } from 'lodash';
-import { computed, ref, watch } from 'vue';
+import { Head, router } from "@inertiajs/vue3";
+import { debounce } from "lodash";
+import { computed, ref, watch } from "vue";
 
-const props = defineProps(['recipes', 'filters']);
-const search = ref(props.filters.search || '');
-const currentSort = ref('');
-const sortDirection = ref('');
+const props = defineProps(["recipes", "filters"]);
+const search = ref(props.filters.search || "");
+const currentSort = ref("");
+const sortDirection = ref("");
 
 const initializeSort = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort');
+    const sort = urlParams.get("sort");
     if (sort) {
-        if (sort.startsWith('-')) {
+        if (sort.startsWith("-")) {
             currentSort.value = sort.substring(1);
-            sortDirection.value = 'desc';
+            sortDirection.value = "desc";
         } else {
             currentSort.value = sort;
-            sortDirection.value = 'asc';
+            sortDirection.value = "asc";
         }
     }
 };
@@ -31,90 +31,88 @@ initializeSort();
 // Watch for search changes
 watch(
     search,
-    debounce(value => {
+    debounce((value) => {
         const params = {};
         if (value) params.search = value;
 
         // Preserve existing sort
         const urlParams = new URLSearchParams(window.location.search);
-        const existingSort = urlParams.get('sort');
+        const existingSort = urlParams.get("sort");
         if (existingSort) params.sort = existingSort;
 
-        router.get('/recipes', params, {
+        router.get("/recipes", params, {
             preserveState: true,
             replace: true,
         });
-    }, 300)
+    }, 300),
 );
 
 // Handle sorting
-const handleSort = field => {
+const handleSort = (field) => {
     let sortValue = field;
 
     // Toggle sort direction if clicking the same field
     if (currentSort.value === field) {
-        if (sortDirection.value === 'asc') {
+        if (sortDirection.value === "asc") {
             sortValue = `-${field}`;
-            sortDirection.value = 'desc';
+            sortDirection.value = "desc";
         } else {
-            sortDirection.value = 'asc';
+            sortDirection.value = "asc";
         }
     } else {
         // Default to ascending for new field
         currentSort.value = field;
-        sortDirection.value = 'asc';
+        sortDirection.value = "asc";
     }
 
     const params = { sort: sortValue };
     if (search.value) params.search = search.value;
 
-    router.get('/recipes', params, {
+    router.get("/recipes", params, {
         preserveState: true,
         replace: true,
     });
 };
 
 // Get sort icon for column
-const getSortIcon = field => {
-    if (currentSort.value !== field) return 'fas fa-sort text-muted';
-    return sortDirection.value === 'asc' ? 'fas fa-sort-up text-primary' : 'fas fa-sort-down text-primary';
+const getSortIcon = (field) => {
+    if (currentSort.value !== field) return "fas fa-sort text-muted";
+    return sortDirection.value === "asc"
+        ? "fas fa-sort-up text-primary"
+        : "fas fa-sort-down text-primary";
 };
 
-const isSortable = field => {
-    const sortableFields = [
-        'id',
-        'product_name',
-    ];
+const isSortable = (field) => {
+    const sortableFields = ["id", "product_name"];
     return sortableFields.includes(field);
 };
 
 const openAddRecipe = () => {
-    router.visit(route('recipes.create'));
+    router.visit(route("recipes.create"));
 };
 
-const openEditRecipe = recipe => {
-    router.visit(route('recipes.edit', recipe.id));
+const openEditRecipe = (recipe) => {
+    router.visit(route("recipes.edit", recipe.id));
 };
 
-import { getCurrentInstance } from 'vue';
+import { getCurrentInstance } from "vue";
 
 const { proxy } = getCurrentInstance();
-const deleteRecipe = id => {
-    proxy.$confirmDelete('/recipes', id);
+const deleteRecipe = (id) => {
+    proxy.$confirmDelete("/recipes", id);
 };
-
 
 // Clear all filters
 const clearFilters = () => {
-    search.value = '';
-    currentSort.value = '';
+    search.value = "";
+    currentSort.value = "";
     router.get(
-        '/recipes',
+        "/recipes",
         {},
         {
             preserveState: true,
             replace: true,
-        }
+        },
     );
 };
 
@@ -127,42 +125,35 @@ const hasActiveFilters = computed(() => {
 <template>
     <Head title="Resep" />
     <AuthenticatedLayout title="Daftar Resep">
-        <!-- Filter Section -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label">Pencarian</label>
+        <!-- Header -->
+        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+            <div class="p-3 text-gray-900">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                >
+                    <div class="d-flex align-items-center gap-3">
                         <TextInput
+                            id="search"
                             v-model="search"
                             type="text"
+                            class="form-control"
                             placeholder="Cari berdasarkan nama produk..."
+                            style="width: 350px"
                         />
-                    </div>
-                    <div class="col-md-2">
-                        <button v-if="hasActiveFilters" @click="clearFilters" class="btn btn-outline-secondary">
+                        <button
+                            v-if="hasActiveFilters"
+                            @click="clearFilters"
+                            class="btn btn-outline-secondary"
+                        >
                             <i class="fas fa-times me-1"></i>
                             Clear
                         </button>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary" @click="openAddRecipe">
-                            <i class="fas fa-plus me-1"></i>
-                            Tambah Resep
-                        </button>
-                    </div>
+                    <button class="btn btn-primary" @click="openAddRecipe">
+                        <i class="fas fa-plus me-1"></i>
+                        Tambah Resep
+                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Results Info -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="text-muted">
-                Menampilkan {{ recipes.from || 0 }} - {{ recipes.to || 0 }} dari {{ recipes.total || 0 }} data
-            </div>
-            <div v-if="hasActiveFilters" class="text-muted">
-                <i class="fas fa-filter me-1"></i>
-                Filter aktif
             </div>
         </div>
 
@@ -176,7 +167,10 @@ const hasActiveFilters = computed(() => {
                                 :class="{
                                     sortable: isSortable('product_name'),
                                 }"
-                                @click="isSortable('product_name') && handleSort('product_name')"
+                                @click="
+                                    isSortable('product_name') &&
+                                    handleSort('product_name')
+                                "
                                 style="cursor: pointer"
                             >
                                 Nama Produk
@@ -186,18 +180,27 @@ const hasActiveFilters = computed(() => {
                                     class="ms-1"
                                 ></i>
                             </th>
-                            <th class="text-center" style="width: 140px">Aksi</th>
+                            <th class="text-center" style="width: 140px">
+                                Aksi
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-if="recipes.data && recipes.data.length === 0">
                             <td colspan="5" class="text-muted py-4 text-center">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
-                                <div v-if="search">Tidak ada data yang sesuai dengan pencarian "{{ search }}"</div>
+                                <div v-if="search">
+                                    Tidak ada data yang sesuai dengan pencarian
+                                    "{{ search }}"
+                                </div>
                                 <div v-else>Belum ada data resep</div>
                             </td>
                         </tr>
-                        <tr v-else v-for="(recipe, index) in recipes.data" :key="recipe.id">
+                        <tr
+                            v-else
+                            v-for="(recipe, index) in recipes.data"
+                            :key="recipe.id"
+                        >
                             <td class="text-muted text-center">
                                 {{ recipes.from + index }}
                             </td>
@@ -206,7 +209,10 @@ const hasActiveFilters = computed(() => {
                                 {{ recipe.product?.product_name }}
                             </td>
                             <td class="text-center">
-                                <div class="btn-group btn-group-sm" role="group">
+                                <div
+                                    class="btn-group btn-group-sm"
+                                    role="group"
+                                >
                                     <button
                                         @click="openEditRecipe(recipe)"
                                         class="btn btn-outline-warning"
@@ -233,8 +239,6 @@ const hasActiveFilters = computed(() => {
         <div class="mt-3">
             <Pagination :links="recipes.links" />
         </div>
-
-
     </AuthenticatedLayout>
 </template>
 

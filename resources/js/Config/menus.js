@@ -118,7 +118,7 @@ export const MENUS = [
     {
         name: "Produksi",
         icon: "fas fa-industry",
-        route: "productions.index",
+        route: "production.index",
         roles: ["owner", "admin"],
     },
     {
@@ -126,11 +126,6 @@ export const MENUS = [
         icon:"fas fa-retweet",
         route:"repack.index",
         roles:["owner","admin"],
-    },
-    {
-        name: "Stock & History",
-        icon: "fas fa-clipboard-list",
-        roles: ["owner", "admin"],
     },
     {
         name: "Stock Opname",

@@ -16,6 +16,7 @@ use App\Http\Controllers\MPropertyItemController;
 use App\Http\Controllers\MRepackStatusController;
 use App\Http\Controllers\MSupplierController;
 use App\Http\Controllers\ProductExpiredController;
+use App\Http\Controllers\ProductionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,10 @@ Route::middleware('auth')->group(function () {
 
         // User Management
         Route::resource('users', UserController::class);
+
+        // Export Routes for Master Data (must be before resources to avoid route conflict)
+        Route::get('categories/export', [MCategoryController::class, 'export'])->name('categories.export');
+        Route::get('suppliers/export', [MSupplierController::class, 'export'])->name('suppliers.export');
 
         // Master Data Routes
         Route::resources([
@@ -99,6 +104,13 @@ Route::middleware('auth')->group(function () {
 
         Route::controller(ProductExpiredController::class)->prefix('product-expired')->name('product-expired.')->group(function () {
             Route::get('/', 'index')->name('index');
+        });
+
+        // Production Routes
+        Route::controller(ProductionController::class)->prefix('production')->name('production.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/ingredients', 'getIngredients')->name('ingredients');
         });
     });
 });
