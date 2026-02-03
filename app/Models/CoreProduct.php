@@ -282,4 +282,14 @@ class CoreProduct extends Model
     {
         return $this->hasMany(CoreStock::class, 'product_id');
     }
+
+    public function recipe()
+    {
+        return $this->hasOne(CoreRecipe::class, 'product_id');
+    }
+
+    public function ingredients()
+    {
+        return $this->hasMany(CoreIncomingProduct::class, 'product_id');
+    }
 }

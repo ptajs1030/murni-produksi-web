@@ -26,4 +26,9 @@ class CoreIngredient extends Model
     {
         return $this->belongsTo(CoreRecipe::class, 'recipe_id');
     }
+
+    public function product()
+    {
+        return $this->belongsTo(CoreProduct::class, 'product_id');
+    }
 }

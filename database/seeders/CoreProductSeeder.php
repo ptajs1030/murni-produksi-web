@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\CoreProduct;
-use App\Models\CoreProductImage;
 use App\Models\MCategory;
 use App\Models\MPropertyItem;
 use App\Models\MSupplier;
@@ -11,79 +10,67 @@ use Illuminate\Database\Seeder;
 
 class CoreProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Buat produk dengan berbagai skenario
-        $this->createElectronicsProducts();
-        $this->createFoodProducts();
-        $this->createFashionProducts();
+        $this->seedFinishedProducts();
+        $this->seedRawMaterials();
     }
 
     /**
-     * Buat produk elektronik
+     * =============================
+     * PRODUK JADI
+     * =============================
      */
-    private function createElectronicsProducts()
+    private function seedFinishedProducts(): void
     {
+        // FOOD – produk jadi
+        CoreProduct::factory()
+            ->count(25)
+            ->finishedProduct()
+            ->state(fn () => [
+                'm_category_id' => MCategory::where('category_code', 'FOOD1')->value('id'),
+                'm_supplier_id' => MSupplier::where('supplier_code', 'SUP02')->value('id'),
+                'm_property_item_id' => MPropertyItem::where('property_code', 'S')
+    ->value('id')
+    ?? MPropertyItem::inRandomOrder()->value('id'),
+
+                'expired_date' => now()->addMonths(rand(3, 18)),
+            ])
+            ->create();
+
+        // FASHION – produk jadi
         CoreProduct::factory()
             ->count(10)
-            ->electronics()
-            ->withPopularBrand()
-            ->state([
-                'm_category_id' => MCategory::where('category_code', 'ELEC1')->first()->id,
-                'm_supplier_id' => MSupplier::where('supplier_code', 'SUP01')->first()->id,
-                'm_property_item_id' => MPropertyItem::where('property_code', 'F')->first()->id,
+            ->finishedProduct()
+            ->state(fn () => [
+                'm_category_id' => MCategory::where('category_code', 'FASH1')->value('id'),
+                'm_supplier_id' => MSupplier::inRandomOrder()->value('id'),
+                'm_property_item_id' => MPropertyItem::where('property_code', 'S')->value('id'),
+                'expired_date' => null,
             ])
             ->create();
     }
 
     /**
-     * Buat produk makanan
+     * =============================
+     * PRODUK BAHAN BAKU
+     * =============================
      */
-    private function createFoodProducts()
+    private function seedRawMaterials(): void
     {
         CoreProduct::factory()
-            ->count(10)
-            ->food()
-            ->withExpiry()
-            ->state([
-                'm_category_id' => MCategory::where('category_code', 'FOOD1')->first()->id,
-                'm_supplier_id' => MSupplier::where('supplier_code', 'SUP02')->first()->id,
-                'm_property_item_id' => MPropertyItem::where('property_code', 'S')->first()->id,
-            ])
-            ->create();
+            ->count(40)
+            ->rawMaterial()
+            ->state(fn () => [
+                'm_category_id' => MCategory::where('category_code', 'FOOD1')->value('id'),
+                'm_supplier_id' => MSupplier::inRandomOrder()->value('id'),
+'m_property_item_id' => MPropertyItem::where('property_code', 'R')
+    ->value('id')
+    ?? MPropertyItem::inRandomOrder()->value('id'),
 
-        CoreProduct::factory()
-            ->count(2)
-            ->food()
-            ->expiringSoon()
-            ->state([
-                'm_category_id' => MCategory::where('category_code', 'FOOD1')->first()->id,
-                'm_supplier_id' => MSupplier::where('supplier_code', 'SUP02')->first()->id,
-                'm_property_item_id' => MPropertyItem::where('property_code', 'S')->first()->id,
+                'brand_name' => null,
+                'expired_date' => now()->addMonths(rand(6, 24)),
             ])
             ->create();
     }
-
-    /**
-     * Buat produk fashion
-     */
-    private function createFashionProducts()
-    {
-        CoreProduct::factory()
-            ->count(10)
-            ->state([
-                'm_category_id' => MCategory::where('category_code', 'FASH1')->first()->id,
-                'm_supplier_id' => MSupplier::inRandomOrder()->first()->id,
-                'm_property_item_id' => MPropertyItem::where('property_code', 'S')->first()->id,
-            ])
-            ->create();
-    }
-
-    /**
-     * Buat produk lengkap dengan units dan images
-     */
-   
 }

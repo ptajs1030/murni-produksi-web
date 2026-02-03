@@ -12,204 +12,205 @@ use App\Models\MSupplier;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CoreProduct>
- */
 class CoreProductFactory extends Factory
 {
     protected $model = CoreProduct::class;
 
+    protected array $finishedProducts = [
+        'Keripik Singkong Original',
+        'Keripik Singkong Balado',
+        'Keripik Pisang Coklat',
+        'Keripik Pisang Keju',
+        'Sambal Bawang Pedas',
+        'Sambal Matah',
+        'Sambal Ijo',
+        'Kopi Susu Gula Aren',
+        'Kopi Hitam Premium',
+        'Teh Botol Manis',
+        'Teh Lemon',
+        'Minuman Coklat',
+        'Susu Coklat',
+        'Susu Stroberi',
+        'Roti Manis Coklat',
+        'Roti Manis Keju',
+        'Brownies Kukus',
+        'Brownies Panggang',
+        'Donat Gula',
+        'Donat Coklat',
+        'Donat Keju',
+        'Cake Pisang',
+        'Cake Coklat',
+        'Muffin Blueberry',
+        'Muffin Coklat',
+        'Cookies Coklat Chip',
+        'Cookies Oatmeal',
+        'Biskuit Keju',
+        'Biskuit Coklat',
+        'Pudding Coklat',
+        'Pudding Vanilla',
+        'Pudding Strawberry',
+        'Es Krim Vanilla',
+        'Es Krim Coklat',
+        'Es Krim Stroberi',
+        'Frozen Nugget Ayam',
+        'Frozen Sosis Ayam',
+        'Frozen Kentang',
+        'Frozen Bakso',
+    ];
+
+    protected array $rawMaterials = [
+        'Tepung Terigu',
+        'Tepung Beras',
+        'Tepung Tapioka',
+        'Gula Pasir',
+        'Gula Aren',
+        'Gula Halus',
+        'Garam Halus',
+        'Minyak Goreng',
+        'Mentega',
+        'Margarin',
+        'Susu Bubuk',
+        'Susu Cair',
+        'Coklat Bubuk',
+        'Coklat Batang',
+        'Keju Parut',
+        'Keju Blok',
+        'Telur Ayam',
+        'Ragi',
+        'Vanili',
+        'Baking Powder',
+        'Baking Soda',
+        'Maizena',
+        'Kopi Bubuk',
+        'Teh Kering',
+        'Cabe Merah',
+        'Cabe Rawit',
+        'Bawang Merah',
+        'Bawang Putih',
+        'Kemiri',
+        'Ketumbar',
+        'Lada',
+        'Daging Ayam',
+        'Daging Sapi',
+        'Ikan Fillet',
+        'Udang',
+        'Minyak Wijen',
+        'Kecap Manis',
+        'Kecap Asin',
+        'Saus Tiram',
+        'Saus Sambal',
+        'Saus Tomat',
+        'Mayones',
+        'Keju Cair',
+        'Susu Kental Manis',
+        'Whipping Cream',
+        'Cocoa Powder',
+        'Gula Cair',
+    ];
+
     public function definition(): array
     {
+        $isFinishedProduct = $this->faker->boolean(45); // 45% produk jadi
+
         return [
-            'm_category_id' => MCategory::inRandomOrder()->first()->id,
-            'm_supplier_id' => MSupplier::inRandomOrder()->first()->id,
-            'target_selling_date' => $this->faker->optional(0.7)->dateTimeBetween('now', '+6 months'),
-            'product_is_pre_order' => $this->faker->boolean(20),
-            'product_processing_days' => $this->faker->randomElement([0, 1, 2, 3, 5, 7, 14]),
-            'product_name' => $this->faker->words(rand(2, 4), true),
-            'brand_name' => $this->faker->optional(0.8)->company(),
-            'created_by' => User::inRandomOrder()->first()->id,
-            'updated_by' => null,
-            'deleted_by' => null,
-            'm_packaging_size_id' => MPackagingSize::inRandomOrder()->first()->id,
-            'm_packaging_type_id' => MPackagingType::inRandomOrder()->first()->id,
-            'm_repack_status_id' => MRepackStatus::inRandomOrder()->first()->id,
-            'm_property_item_id' => MPropertyItem::inRandomOrder()->first()->id,
-            'packaging_size_input' => $this->faker->randomElement(['100', '250', '500', '1', '50', '100', '250', '500', '1000']),
-            // product_unit_sku akan auto-generate via model
-            'product_unit_qty' => $this->faker->randomFloat(2, 1, 1000),
-            'product_unit_price' => $this->faker->randomFloat(2, 5000, 500000),
-            'expired_date' => $this->faker->optional(0.6)->dateTimeBetween('+1 month', '+2 years'),
-        ];
+            'm_category_id' => MCategory::inRandomOrder()->value('id'),
+            'm_supplier_id' => MSupplier::inRandomOrder()->value('id'),
 
-    }
+            'product_name' => $isFinishedProduct
+                ? $this->faker->unique()->randomElement($this->finishedProducts)
+                : $this->faker->unique()->randomElement($this->rawMaterials),
 
-    /**
-     * State untuk produk pre-order
-     */
-    public function preOrder(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'product_is_pre_order' => true,
-            'product_processing_days' => $this->faker->numberBetween(3, 30),
-        ]);
-    }
+            'description' => $this->faker->optional()->sentence(),
 
-    /**
-     * State untuk produk ready stock
-     */
-    public function readyStock(): static
-    {
-        return $this->state(fn (array $attributes) => [
+            'product_type' => $isFinishedProduct
+                ? 'Produk Jadi'
+                : 'Produk Bahan Baku',
+
             'product_is_pre_order' => false,
             'product_processing_days' => 0,
-        ]);
-    }
 
-    /**
-     * State untuk produk dengan brand terkenal
-     */
-    public function withPopularBrand(): static
-    {
-        $brands = [
-            'Samsung', 'Apple', 'Sony', 'LG', 'Panasonic',
-            'Philips', 'Xiaomi', 'Huawei', 'Canon', 'Nikon',
-        ];
+            'brand_name' => $isFinishedProduct
+                ? $this->faker->company()
+                : null,
 
-        return $this->state(fn (array $attributes) => [
-            'brand_name' => $this->faker->randomElement($brands),
-        ]);
-    }
+            'm_property_item_id' => MPropertyItem::where('property_code', 'P')->value('id'),
 
-    /**
-     * State untuk produk elektronik
-     */
-    public function electronics(): static
-    {
-        $electronicNames = [
-            'Smartphone Android', 'Laptop Gaming', 'Smart TV LED',
-            'Wireless Earbuds', 'Power Bank', 'Bluetooth Speaker',
-            'Digital Camera', 'Smartwatch', 'Tablet', 'Gaming Mouse',
-        ];
+            'm_packaging_size_id' => MPackagingSize::inRandomOrder()->value('id'),
+            'm_packaging_type_id' => MPackagingType::inRandomOrder()->value('id'),
+            'm_repack_status_id' => MRepackStatus::inRandomOrder()->value('id'),
 
-        return $this->state(fn (array $attributes) => [
-            'product_name' => $this->faker->randomElement($electronicNames),
-        ]);
-    }
+            'packaging_size_input' => $this->faker->randomElement([
+                50, 100, 250, 500, 1000, 2000, 5000
+            ]),
 
-    /**
-     * State untuk produk makanan
-     */
-    public function food(): static
-    {
-        $foodNames = [
-            'Snack Keripik Singkong', 'Kopi Arabika Premium', 'Mie Instan Pedas',
-            'Biskuit Cokelat', 'Teh Hijau Organik', 'Kerupuk Udang',
-            'Sambal Botol', 'Rendang Kalengan', 'Dodol Betawi', 'Keju Olahan',
-        ];
+            'product_unit_qty' => $this->faker->randomFloat(2, 1, 100),
+            'product_unit_price' => $isFinishedProduct
+                ? $this->faker->randomFloat(2, 5000, 150000)
+                : $this->faker->randomFloat(2, 2000, 80000),
 
-        return $this->state(fn (array $attributes) => [
-            'product_name' => $this->faker->randomElement($foodNames),
-        ]);
-    }
-
-    /**
-     * State untuk unit dengan expired date
-     */
-    public function withExpiry(): static
-    {
-        return $this->state(fn (array $attributes) => [
             'expired_date' => $this->faker->dateTimeBetween('+1 month', '+2 years'),
-        ]);
+
+            'created_by' => User::inRandomOrder()->value('id'),
+            'updated_by' => null,
+            'deleted_by' => null,
+        ];
     }
 
-    /**
-     * State untuk unit tanpa expired date
-     */
-    public function withoutExpiry(): static
+    /* ===================== STATES ===================== */
+
+    public function finishedProduct(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'expired_date' => null,
+        return $this->state(fn () => [
+            'product_type' => 'Produk Jadi',
+            'brand_name' => $this->faker->company(),
+        ]);
+    }
+
+    public function rawMaterial(): static
+    {
+        return $this->state(fn () => [
+            'product_type' => 'Produk Bahan Baku',
+            'brand_name' => null,
         ]);
     }
 
     /**
-     * State untuk unit yang sudah expired
+     * Produk yang sudah expired (1 hari - 2 bulan yang lalu)
      */
     public function expired(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'expired_date' => $this->faker->dateTimeBetween('-1 year', '-1 day'),
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('-2 months', '-1 day'),
         ]);
     }
 
     /**
-     * State untuk unit yang akan expired soon
+     * Produk yang akan expired dalam waktu dekat (1-10 hari)
      */
     public function expiringSoon(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'expired_date' => $this->faker->dateTimeBetween('now', '+30 days'),
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('now', '+10 days'),
         ]);
     }
 
     /**
-     * State untuk unit dengan harga murah
+     * Produk yang akan expired dalam 11-30 hari
      */
-    public function cheapPrice(): static
+    public function expiringInMonth(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'product_unit_price' => $this->faker->randomFloat(2, 1000, 25000),
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('+11 days', '+30 days'),
         ]);
     }
 
     /**
-     * State untuk unit dengan harga mahal
+     * Custom: Produk yang akan expired dalam X hari
      */
-    public function expensivePrice(): static
+    public function expiringInDays(int $days): static
     {
-        return $this->state(fn (array $attributes) => [
-            'product_unit_price' => $this->faker->randomFloat(2, 100000, 1000000),
-        ]);
-    }
-
-    /**
-     * State untuk unit minuman
-     */
-    public function beverageUnit(): static
-    {
-        $sizes = ['100', '250', '330', '500', '600', '1000', '1500'];
-
-        return $this->state(fn (array $attributes) => [
-            'packaging_size_input' => $this->faker->randomElement($sizes),
-            'product_unit_qty' => $this->faker->numberBetween(12, 144), // per karton
-        ]);
-    }
-
-    /**
-     * State untuk unit makanan
-     */
-    public function foodUnit(): static
-    {
-        $sizes = ['50', '100', '150', '250', '500', '1000', '2000'];
-
-        return $this->state(fn (array $attributes) => [
-            'packaging_size_input' => $this->faker->randomElement($sizes),
-            'product_unit_qty' => $this->faker->numberBetween(6, 48), // per karton
-        ]);
-    }
-
-    /**
-     * State untuk unit elektronik
-     */
-    public function electronicUnit(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'packaging_size_input' => '1',
-            'product_unit_qty' => $this->faker->numberBetween(1, 10),
-            'product_unit_price' => $this->faker->randomFloat(2, 50000, 2000000),
-            'expired_date' => null, // Elektronik tidak expired
+        return $this->state(fn () => [
+            'expired_date' => now()->addDays($days),
         ]);
     }
 }

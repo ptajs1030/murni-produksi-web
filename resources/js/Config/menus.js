@@ -1,5 +1,6 @@
 
 
+
 export const MENUS = [
     {
         name: "Dashboard",
@@ -56,7 +57,7 @@ export const MENUS = [
             {
                 name: "Ukuran Packaging",
                 icon: "fa fa-ruler",
-                route: "products.index",
+                route: "packaging-sizes.index",
                 roles: ["owner", "admin"],
             },
             {
@@ -69,25 +70,6 @@ export const MENUS = [
                 name: "Repack status",
                 icon: "fa fa-retweet",
                 route: "repack-status.index",
-                roles: ["owner", "admin"],
-            },
-        ],
-    },
-    {
-        name: "Master Data Gudang",
-        icon: "fas fa-warehouse",
-        roles: ["owner", "admin"],
-        children: [
-            {
-                name: "Gudang",
-                icon: "fas fa-warehouse",
-                route: "warehouses.index",
-                roles: ["owner", "admin"],
-            },
-            {
-                name: "Gudang Level",
-                icon: "fas fa-layer-group",
-                route: "stock-opnames.index",
                 roles: ["owner", "admin"],
             },
         ],
@@ -134,20 +116,27 @@ export const MENUS = [
         roles: ["owner", "admin"],
     },
     {
-        name: "Stock & History",
-        icon: "fas fa-clipboard-list",
+        name: "Produksi",
+        icon: "fas fa-industry",
+        route: "production.index",
         roles: ["owner", "admin"],
+    },
+    {
+        name:"Repack",
+        icon:"fas fa-retweet",
+        route:"repack.index",
+        roles:["owner","admin"],
     },
     {
         name: "Stock Opname",
         icon: "fas fa-clipboard-check",
         route: "stock-opnames.index",
-        roles: ["owner"],
+        roles: ["owner","admin"],
     },
     {
         name: "Produk Expired",
         icon: "fas fa-calendar-times",
-        route: "expired-products.index",
+        route: "product-expired.index",
         roles: ["owner", "admin"],
     },
 ];

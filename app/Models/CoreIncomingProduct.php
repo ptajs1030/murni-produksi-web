@@ -22,7 +22,7 @@ class CoreIncomingProduct extends Model
     /**
      * Relasi ke Product
      */
-    public function products()
+    public function product()
     {
         return $this->belongsTo(CoreProduct::class, 'product_id');
     }

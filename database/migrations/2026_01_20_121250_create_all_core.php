@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('brand_name')->nullable();
             $table->text('description')->nullable();
-
+            $table->string('product_type')->comment('Produk bahan baku, produk jadi')->default('Produk Bahan Baku');
             $table->foreignId('m_property_item_id')->constrained('m_property_items');
             $table->foreignId('m_packaging_size_id')->constrained('m_packaging_sizes');
             $table->foreignId('m_packaging_type_id')->constrained('m_packaging_types');
@@ -155,17 +155,20 @@ return new class extends Migration
             $table->foreignId(column: 'stock_opname_id')->constrained('core_stock_opname')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('core_products')->cascadeOnDelete();
             $table->foreignId(column: 'stock_id')->constrained('core_stoks')->cascadeOnDelete();
-            $table->enum('status', ['SESUAI', 'TIDAK SESUAI', 'SELESAI', 'PENDING']);
+            $table->enum('status', ['APPROVED', 'REJECTED', 'PENDING'])->default('PENDING');
             $table->integer('real_quantity');
             $table->integer('expired_quantity');
             $table->text('description')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDeleteNull();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
             $table->timestamps();
             $table->unique(['stock_opname_id', 'product_id']);
         });
 
         Schema::create('core_recipes', function (Blueprint $table) {
             $table->id();
-            $table->string('recipe_name');
+            $table->foreignId('product_id')->constrained('core_products')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDeleteNull();
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDeleteNull();
