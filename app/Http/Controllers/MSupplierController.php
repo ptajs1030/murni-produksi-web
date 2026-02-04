@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MSupplierExport;
 use App\Models\MSupplier;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MSupplierController extends Controller
 {
@@ -13,7 +15,7 @@ class MSupplierController extends Controller
         $query = MSupplier::query();
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%{$search}%");
+            $query->where('supplier_name', 'like', "%{$search}%");
         }
         $suppliers = $query->paginate(10);
         return Inertia::render('MSuppliers/Index', [
@@ -61,10 +63,10 @@ class MSupplierController extends Controller
     }
 
     // Method export baru
-    // public function export(Request $request)
-    // {
-    //     $fileName = 'suppliers-' . date('Y-m-d-His') . '.xlsx';
+    public function export(Request $request)
+    {
+        $fileName = 'suppliers-' . date('Y-m-d-His') . '.xlsx';
 
-    //     return Excel::download(new MSupplierExport($request), $fileName);
-    // }
+        return Excel::download(new MSupplierExport($request), $fileName);
+    }
 }

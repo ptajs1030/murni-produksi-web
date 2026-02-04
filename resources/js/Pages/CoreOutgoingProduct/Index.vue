@@ -1,35 +1,39 @@
 <script setup>
-import Pagination from '@/Components/Pagination.vue';
-import TextInput from '@/Components/TextInput.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import OutgoingProductModal from './OutgoingProductModal.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { debounce } from 'lodash';
-import { computed, ref, watch } from 'vue';
+import Pagination from "@/Components/Pagination.vue";
+import TextInput from "@/Components/TextInput.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import OutgoingProductModal from "./OutgoingProductModal.vue";
+import { Head, router } from "@inertiajs/vue3";
+import { debounce } from "lodash";
+import { computed, ref, watch } from "vue";
 
-const props = defineProps(['outgoing', 'products', 'outTypes', 'filters']);
+const props = defineProps(["outgoing", "products", "outTypes", "filters"]);
 
 const modalRef = ref(null);
-const search = ref(props.filters?.search || '');
+const search = ref(props.filters?.search || "");
 
 watch(
     search,
     debounce((value) => {
         const params = {};
         if (value) params.search = value;
-        router.get(route('outgoing-goods.index'), params, {
+        router.get(route("outgoing-goods.index"), params, {
             preserveState: true,
             replace: true,
         });
-    }, 300)
+    }, 300),
 );
 
 const clearFilters = () => {
-    search.value = '';
-    router.get(route('outgoing-goods.index'), {}, {
-        preserveState: true,
-        replace: true,
-    });
+    search.value = "";
+    router.get(
+        route("outgoing-goods.index"),
+        {},
+        {
+            preserveState: true,
+            replace: true,
+        },
+    );
 };
 
 const hasActiveFilters = computed(() => !!search.value);
@@ -39,13 +43,13 @@ const openAddModal = () => {
 };
 
 const formatDate = (dateStr) => {
-    if (!dateStr) return '-';
-    return new Date(dateStr).toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
     });
 };
 </script>
@@ -54,19 +58,21 @@ const formatDate = (dateStr) => {
     <Head title="Barang Keluar" />
 
     <AuthenticatedLayout title="Barang Keluar">
-        <!-- Filter -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label">Pencarian</label>
+        <!-- Header -->
+        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+            <div class="p-3 text-gray-900">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                >
+                    <div class="d-flex align-items-center gap-3">
                         <TextInput
+                            id="search"
                             v-model="search"
                             type="text"
+                            class="form-control"
                             placeholder="Cari berdasarkan nama produk..."
+                            style="width: 350px"
                         />
-                    </div>
-                    <div class="col-md-2">
                         <button
                             v-if="hasActiveFilters"
                             type="button"
@@ -77,24 +83,15 @@ const formatDate = (dateStr) => {
                             Clear
                         </button>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button type="button" class="btn btn-primary" @click="openAddModal">
-                            <i class="fas fa-plus me-1"></i>
-                            Tambah Barang Keluar
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        @click="openAddModal"
+                    >
+                        <i class="fas fa-plus me-1"></i>
+                        Tambah Barang Keluar
+                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Results info -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="text-muted">
-                Menampilkan {{ outgoing?.from ?? 0 }} - {{ outgoing?.to ?? 0 }} dari {{ outgoing?.total ?? 0 }} data
-            </div>
-            <div v-if="hasActiveFilters" class="text-muted">
-                <i class="fas fa-filter me-1"></i>
-                Filter aktif
             </div>
         </div>
 
@@ -106,7 +103,9 @@ const formatDate = (dateStr) => {
                         <tr>
                             <th class="text-center" style="width: 60px">No</th>
                             <th>Nama Produk</th>
-                            <th class="text-center" style="width: 120px">Quantity</th>
+                            <th class="text-center" style="width: 120px">
+                                Quantity
+                            </th>
                             <th style="width: 140px">Tipe Keluar</th>
                             <th style="width: 180px">Kapan Barang Keluar</th>
                         </tr>
@@ -116,7 +115,8 @@ const formatDate = (dateStr) => {
                             <td colspan="5" class="text-muted py-4 text-center">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 <div v-if="search">
-                                    Tidak ada data yang sesuai dengan pencarian "{{ search }}"
+                                    Tidak ada data yang sesuai dengan pencarian
+                                    "{{ search }}"
                                 </div>
                                 <div v-else>Belum ada data barang keluar</div>
                             </td>
@@ -130,13 +130,15 @@ const formatDate = (dateStr) => {
                                 {{ (outgoing.from ?? 0) + index }}
                             </td>
                             <td class="fw-medium">
-                                {{ row.product?.product_name ?? '-' }}
+                                {{ row.product?.product_name ?? "-" }}
                             </td>
                             <td class="text-center">
                                 {{ row.packaging_size_input }}
                             </td>
                             <td>
-                                <span class="badge bg-secondary">{{ row.out_type?.out_type_name ?? '-' }}</span>
+                                <span class="badge bg-secondary">{{
+                                    row.out_type?.out_type_name ?? "-"
+                                }}</span>
                             </td>
                             <td class="text-muted">
                                 {{ formatDate(row.created_at) }}

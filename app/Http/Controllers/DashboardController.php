@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CoreIncomingProduct;
 use App\Models\CoreInventoryOut;
+use App\Models\CoreOutgoingProduct;
 use App\Models\CoreProduct;
-use App\Models\CoreProductIncomes;
 use Carbon\Carbon;
 use Inertia\Inertia;
 
@@ -12,30 +13,34 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Total Products
-    
+       $totalProducts = CoreProduct::count();
+
+        // Total Expired Products (products with expired_date <= today)
+        $totalExpiredProducts = CoreProduct::where('expired_date', '<=', Carbon::now()->toDateString())->count();
+
+        // Total Sales (assuming CoreInventoryOut represents sales/outgoing items)
+        $totalSales = CoreOutgoingProduct::whereHas('outType', function ($query) {
+            $query->whereIn('out_type_name', ['Sale', 'Penjualan', 'Sold']);
+        })->sum('packaging_size_input') ?? 0;
+
+        // Total Purchases/Income (from CoreProductIncomes)
+        $totalPurchases = CoreIncomingProduct::count();
+
+        // Additional stats for more insights
+        $recentProducts = CoreProduct::latest()->take(5)->get(['id', 'product_name', 'created_at']);
+        $lowStockProducts = CoreProduct::whereHas('stocks', function ($query) {
+            $query->where('packaging_size_input', '<=', 10);
+        })->count();
 
         return Inertia::render('Dashboard', [
             'stats' => [
-                'totalProducts' => 100,
-                'totalExpiredProducts' => 5,
-                'totalSales' => 200,
-                'totalPurchases' => 150,
-                'lowStockProducts' => 8,
+                'totalProducts' => $totalProducts,
+                'totalExpiredProducts' => $totalExpiredProducts,
+                'totalSales' => $totalSales,
+                'totalPurchases' => $totalPurchases,
+                'lowStockProducts' => $lowStockProducts,
             ],
-            'recentProducts' => [
-                [
-                    'id' => 1,
-                    'product_name' => 'Product A',
-                    'created_at' => now(),
-                ],
-                [
-                    'id' => 2,
-                    'product_name' => 'Product B',
-                    'created_at' => now(),
-                ],
-            ],
-
+            'recentProducts' => $recentProducts,
         ]);
     }
 }

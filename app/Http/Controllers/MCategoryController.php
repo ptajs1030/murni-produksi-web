@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MCategoryExport;
 use App\Models\MCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MCategoryController extends Controller
 {
@@ -13,7 +15,7 @@ class MCategoryController extends Controller
         $query= MCategory::query();
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%{$search}%");
+            $query->where('category_name', 'like', "%{$search}%");
         }
         $categories = $query->paginate(10);
         return Inertia::render('MCategories/Index', [
@@ -61,11 +63,12 @@ class MCategoryController extends Controller
 
         return redirect()->route('categories.index');
     }
-    // public function export(Request $request)
-    // {
-    //     $fileName = 'categories-' . date('Y-m-d-His') . '.xlsx';
 
-    //     return Excel::download(new MCategoryExport($request), $fileName);
-    // }
+    public function export(Request $request)
+    {
+        $fileName = 'categories-' . date('Y-m-d-His') . '.xlsx';
 
+        return Excel::download(new MCategoryExport($request), $fileName);
+    }
 }
+

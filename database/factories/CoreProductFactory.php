@@ -173,4 +173,44 @@ class CoreProductFactory extends Factory
             'brand_name' => null,
         ]);
     }
+
+    /**
+     * Produk yang sudah expired (1 hari - 2 bulan yang lalu)
+     */
+    public function expired(): static
+    {
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('-2 months', '-1 day'),
+        ]);
+    }
+
+    /**
+     * Produk yang akan expired dalam waktu dekat (1-10 hari)
+     */
+    public function expiringSoon(): static
+    {
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('now', '+10 days'),
+        ]);
+    }
+
+    /**
+     * Produk yang akan expired dalam 11-30 hari
+     */
+    public function expiringInMonth(): static
+    {
+        return $this->state(fn () => [
+            'expired_date' => $this->faker->dateTimeBetween('+11 days', '+30 days'),
+        ]);
+    }
+
+    /**
+     * Custom: Produk yang akan expired dalam X hari
+     */
+    public function expiringInDays(int $days): static
+    {
+        return $this->state(fn () => [
+            'expired_date' => now()->addDays($days),
+        ]);
+    }
 }
