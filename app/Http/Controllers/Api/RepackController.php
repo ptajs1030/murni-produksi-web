@@ -1,27 +1,23 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RepackRequest; // Changed from DTO
+use App\Http\Requests\RepackStoreRequest;
 use App\Service\RepackService;
+use Illuminate\Http\JsonResponse;
 
 class RepackController extends Controller
 {
-    protected $repackService;
+    public function __construct(
+        protected RepackService $repackService
+    ) {}
 
-    public function __construct(RepackService $repackService)
+    public function store(RepackStoreRequest $request) 
     {
-        $this->repackService = $repackService;
-    }
+        $this->repackService->repack($request->validated());
 
-    public function repack(RepackRequest $request) // Changed type hint
-    {
-        try {
-            $this->repackService->executeRepack($request->validated()); // Pass validated data
-            return response()->json(['message' => 'Repack operation successful'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'message' => 'Repack berhasil dilakukan'
+        ]);
     }
 }

@@ -1,80 +1,59 @@
 <?php
-
 namespace App\Service;
 
+use App\Models\CoreStockTransaction;
+use App\Repository\StockRepository;
 use Illuminate\Support\Facades\DB;
-use App\Models\CoreProduct;
-use App\Models\CoreStock;
-use App\Models\CoreStockTransactions;
-use App\Models\MTransactionType;
-use Carbon\Carbon; // Import Carbon
+use Exception;
 
 class RepackService
 {
-    public function executeRepack(array $repackData) // Changed type hint
+    public function __construct(
+        protected StockRepository $stockRepository
+    ) {}
+
+    public function repack(array $data): void
     {
-        DB::beginTransaction();
-        try {
-            // Get transaction type IDs
-            $repackOutType = MTransactionType::where('transaction_type_name', 'REPACK_OUT')->firstOrFail();
-            $repackInType = MTransactionType::where('transaction_type_name', 'REPACK_IN')->firstOrFail();
+        DB::transaction(function () use ($data) {
 
-            // Handle repack_date
-            $repackDate = isset($repackData['repack_date']) ? Carbon::parse($repackData['repack_date']) : now();
+            $sourceStock = $this->stockRepository
+                ->getByProductId($data['source_product_id']);
 
-            // Validate outgoing product and stock
-            $outgoingProduct = CoreProduct::find($repackData['outgoing_product_id']); // Changed access
-            if (!$outgoingProduct) {
-                throw new \Exception("Outgoing product not found.");
+            if (!$sourceStock) {
+                throw new Exception('Stock sumber tidak ditemukan');
             }
 
-            $outgoingStock = CoreStock::where('product_id', $outgoingProduct->id)->first();
-            if (!$outgoingStock || $outgoingStock->in_stock < $repackData['outgoing_quantity']) { // Changed access
-                throw new \Exception("Not enough stock for outgoing product.");
+            if ($sourceStock->packaging_size_input < $data['source_quantity']) {
+                throw new Exception('Stock tidak mencukupi');
             }
 
-            // Decrement outgoing product stock
-            $outgoingStock->in_stock -= $repackData['outgoing_quantity']; // Changed access
-            $outgoingStock->save();
-
-            // Record outgoing stock transaction
-            CoreStockTransactions::create([
-                'product_id' => $outgoingProduct->id,
-                'transaction_type_id' => $repackOutType->id,
-                'quantity' => -$repackData['outgoing_quantity'], // Changed access
-                'transaction_date' => $repackDate, // Changed
-                'notes' => 'Repack outgoing: ' . ($repackData['notes'] ?? ''), // Changed access
-                'created_by' => auth()->id()
-            ]);
-
-            // Validate incoming product
-            $incomingProduct = CoreProduct::find($repackData['incoming_product_id']); // Changed access
-            if (!$incomingProduct) {
-                throw new \Exception("Incoming product not found.");
-            }
-
-            // Increment incoming product stock
-            $incomingStock = CoreStock::firstOrCreate(
-                ['product_id' => $incomingProduct->id],
-                ['in_stock' => 0]
+            $this->stockRepository->decrement(
+                $sourceStock,
+                $data['source_quantity']
             );
-            $incomingStock->in_stock += $repackData['incoming_quantity']; // Changed access
-            $incomingStock->save();
 
-            // Record incoming stock transaction
-            CoreStockTransactions::create([
-                'product_id' => $incomingProduct->id,
-                'transaction_type_id' => $repackInType->id,
-                'quantity' => $repackData['incoming_quantity'], // Changed access
-                'transaction_date' => $repackDate, // Changed
-                'notes' => 'Repack incoming: ' . ($repackData['notes'] ?? ''), // Changed access
-                'created_by' => auth()->id()
+            CoreStockTransaction::create([
+                'product_id' => $data['source_product_id'],
+                'quantity' => $data['source_quantity'],
+                'transaction_type_id' => 2,
+                'transaction_date' => now(),
+                'notes' => 'Product direpack menjadi ' . count($data['target_products']) . ' produk',
+                'created_by' => auth()->id(),
             ]);
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+            foreach ($data['target_products'] as $target) {
+                $targetStock = $this->stockRepository
+                    ->getByProductId($target['product_id']);
+
+                if (!$targetStock) {
+                    throw new Exception('Stock produk hasil repack tidak ditemukan');
+                }
+
+                $this->stockRepository->increment(
+                    $targetStock,
+                    $target['quantity']
+                );
+            }
+        });
     }
 }
