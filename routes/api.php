@@ -13,13 +13,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/product', [ProductController::class, 'index']);
     Route::post('/logout', [LoginController::class, 'logout']); // Ensure logout is here
-    
+    Route::post('/production', [ProductionController::class, 'store']);
+    Route::get('/production', [ProductionController::class, 'index']);
+    Route::post('/repack', [RepackController::class, 'store']);
     Route::get('/recipes', [RecipeController::class, 'index']);
     Route::post('/recipes', [RecipeController::class, 'store']);
-    
-    Route::middleware('admin, owner')->group(function () {});
 });
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/production', [ProductionController::class, 'store']);
-Route::post('/repack', [RepackController::class, 'store']); // Added this line

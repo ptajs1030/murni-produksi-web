@@ -1,5 +1,5 @@
 <?php
-namespace App\Services;
+namespace App\Service;
 
 use App\Models\CoreRecipe;
 use App\Models\CoreStock;
@@ -44,7 +44,6 @@ class ProductionService
                     $ingredient->product->product_name . '(' . $needed . ')';
             }
 
-            // ⚠️ LOGIC ASLI: product_id = recipe_id
             $productStock = CoreStock::where(
                 'product_id',
                 $data['recipe_id']
@@ -61,7 +60,7 @@ class ProductionService
                 'product_id' => $data['recipe_id'],
                 'quantity' => $data['quantity'],
                 'description' => $ingredientsLog,
-                //'created_by' => auth()->id(),
+                'created_by' => auth()->id(),
             ]);
 
             return [
