@@ -116,15 +116,6 @@ const createStockOpname = () => {
                                         >
                                             <i class="fas fa-eye"></i>
                                         </Link>
-                                        <button
-                                            @click="
-                                                deleteStockOpname(stockOpname)
-                                            "
-                                            class="btn btn-outline-danger btn-md"
-                                            title="Delete"
-                                        >
-                                            <i class="fas fa-trash"></i>
-                                        </button>
                                     </div>
                                 </td>
                             </tr>

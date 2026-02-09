@@ -247,14 +247,25 @@ const showFullNote = (title, note) => {
 // Export function
 const exportExcel = () => {
     const params = {};
+
+    // Include search filter if exists
     if (search.value) {
         params.search = search.value;
     }
+
+    // Include sort if exists
+    const urlParams = new URLSearchParams(window.location.search);
+    const existingSort = urlParams.get("sort");
+    if (existingSort) {
+        params.sort = existingSort;
+    }
+
+    // Build query string
     const queryString = new URLSearchParams(params).toString();
-    const url =
+    // Download file
+    window.location.href =
         route("stock-opnames.products.export", props.stockOpname.id) +
         (queryString ? "?" + queryString : "");
-    window.location.href = url;
 };
 </script>
 

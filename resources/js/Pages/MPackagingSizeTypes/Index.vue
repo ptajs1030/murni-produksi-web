@@ -91,6 +91,7 @@ const isSortable = (field) => {
         "id",
         "type_code",
         "type_description",
+        "base_unit",
         "created_at",
         "updated_at",
     ];
@@ -212,6 +213,21 @@ const hasActiveFilters = computed(() => {
                                 ></i>
                             </th>
                             <th
+                                :class="{ sortable: isSortable('base_unit') }"
+                                @click="
+                                    isSortable('base_unit') &&
+                                    handleSort('base_unit')
+                                "
+                                style="cursor: pointer"
+                            >
+                                Satuan Dasar
+                                <i
+                                    v-if="isSortable('base_unit')"
+                                    :class="getSortIcon('base_unit')"
+                                    class="ms-1"
+                                ></i>
+                            </th>
+                            <th
                                 :class="{ sortable: isSortable('created_at') }"
                                 @click="
                                     isSortable('created_at') &&
@@ -266,6 +282,9 @@ const hasActiveFilters = computed(() => {
                             </td>
                             <td class="fw-medium">
                                 {{ packagingSizeType.type_description }}
+                            </td>
+                            <td class="text-muted text-center">
+                                {{ packagingSizeType.base_unit }}
                             </td>
                             <td class="text-muted">
                                 {{

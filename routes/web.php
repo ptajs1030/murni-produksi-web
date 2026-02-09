@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}/products/{productId}', 'deleteProduct')->name('products.delete');
             Route::post('/{id}/submit', 'submit')->name('submit');
             Route::put('/{id}/products/{productId}/owner-action', 'ownerAction')->name('products.owner-action')->middleware('role:owner');
+            Route::get('/{id}/products/export', 'export')->name('products.export');
         });
 
         // Repack Routes
