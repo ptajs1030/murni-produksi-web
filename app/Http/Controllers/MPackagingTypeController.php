@@ -15,8 +15,8 @@ class MPackagingTypeController extends Controller
         if($request->has('search')){
             $search=$request->input('search');
             $query->where(function($q) use ($search){
-                $q->where('type_code','like','%'.$search.'%')
-                  ->orWhere('type_description','like','%'.$search.'%');
+                $q->where('packaging_type_code','like','%'.$search.'%')
+                  ->orWhere('packaging_type_name','like','%'.$search.'%');
             });
         }
         $query->with('packagingLevel');
