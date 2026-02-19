@@ -18,6 +18,7 @@ use App\Http\Controllers\MSupplierController;
 use App\Http\Controllers\ProductExpiredController;
 use App\Http\Controllers\ProductionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -113,6 +114,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/', 'store')->name('store');
             Route::get('/ingredients', 'getIngredients')->name('ingredients');
         });
+
+        // Stock Transaction Routes
+        Route::get('/stock-transactions', [StockTransactionController::class, 'index'])->name('stock-transactions.index');
     });
 });
 

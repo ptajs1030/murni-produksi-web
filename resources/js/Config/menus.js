@@ -1,6 +1,3 @@
-
-
-
 export const MENUS = [
     {
         name: "Dashboard",
@@ -122,21 +119,27 @@ export const MENUS = [
         roles: ["owner", "admin"],
     },
     {
-        name:"Repack",
-        icon:"fas fa-retweet",
-        route:"repack.index",
-        roles:["owner","admin"],
+        name: "Repack",
+        icon: "fas fa-retweet",
+        route: "repack.index",
+        roles: ["owner", "admin"],
     },
     {
         name: "Stock Opname",
         icon: "fas fa-clipboard-check",
         route: "stock-opnames.index",
-        roles: ["owner","admin"],
+        roles: ["owner", "admin"],
     },
     {
         name: "Produk Expired",
         icon: "fas fa-calendar-times",
         route: "product-expired.index",
+        roles: ["owner", "admin"],
+    },
+    {
+        name: "Riwayat Transaksi",
+        icon: "fas fa-history",
+        route: "stock-transactions.index",
         roles: ["owner", "admin"],
     },
 ];

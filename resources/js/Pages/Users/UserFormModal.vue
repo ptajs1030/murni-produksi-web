@@ -122,7 +122,7 @@ defineExpose({ open, close });
                         <InputLabel for="role" value="Role" />
                         <RoleSelect
                             v-model="form.role"
-                            :roles="['admin',  'petugas']"
+                            :roles="['admin', 'operator']"
                             placeholder="Pilih role"
                         />
 
