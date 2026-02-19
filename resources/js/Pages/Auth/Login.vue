@@ -33,7 +33,7 @@ const submit = () => {
 // Get app settings from page props
 const page = usePage();
 const appLogo = computed(() => page.props.appSettings?.logo || '/resources/img/logo.png');
-const appName = computed(() => page.props.appSettings?.name || 'Laravel');
+const appName = computed(() => page.props.appSettings?.name || 'Murni Produksi');
 const appLoginImage = computed(() => page.props.appSettings?.img_login || '/resources/img/lingkaran.png');
 </script>
 
