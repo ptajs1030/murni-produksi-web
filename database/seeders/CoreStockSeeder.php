@@ -19,9 +19,14 @@ public function run()
     )->get();
 
     foreach ($products as $product) {
+        $isFinished = $product->product_type === 'Produk Jadi';
+
         CoreStock::factory()->create([
             'product_id' => $product->id,
-            'packaging_size_input' => $product->packaging_size_input,
+            'in_stock' => 1,
+            'packaging_size_input' => $isFinished
+                ? 0
+                : fake()->randomElement([100, 250, 500, 1000, 2000, 5000]),
         ]);
     }
 
