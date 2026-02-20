@@ -11,7 +11,7 @@ class ProductionStoreDTO
     public function __construct(
         public int $recipeId,
         public int $quantity
-        /*public int $userId,*/
+        //public int $userId,
     ) {}
 
     /**
@@ -22,7 +22,7 @@ class ProductionStoreDTO
         return new self(
             recipeId: (int) $data['recipe_id'],
             quantity: (int) $data['quantity']
-            /*userId: auth()->id(),*/
+            //userId: auth()->id(),
         );
     }
 }
