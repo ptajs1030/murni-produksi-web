@@ -171,7 +171,7 @@ defineExpose({ open, close });
                 <h5 class="modal-title">Menu Produksi</h5>
                 <button type="button" class="btn-close" @click="close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto">
                 <div class="row">
                     <!-- Left Column: Input Form -->
                     <div class="col-md-5">

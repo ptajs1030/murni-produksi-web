@@ -35,9 +35,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:admin,petugas',
+            'role' => 'required|string|in:admin,operator',
         ],[
-            'role.in' => 'Role harus diisi dengan nilai yang valid (admin atau petugas).',
+            'role.in' => 'Role harus diisi dengan nilai yang valid (admin atau operator).',
             'role.required' => 'Role harus diisi.',
             'name.required' => 'Nama harus diisi.',
             'email.required' => 'Email harus diisi.',
@@ -77,9 +77,9 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
                 'password' => 'nullable|string|min:8|confirmed',
-                'role' => 'required|string|in:admin,petugas',
+                'role' => 'required|string|in:admin,operator',
             ],[
-                'role.in' => 'Role harus diisi dengan nilai yang valid (admin atau petugas).',
+                'role.in' => 'Role harus diisi dengan nilai yang valid (admin atau operator).',
                 'role.required' => 'Role harus diisi.',
                 'name.required' => 'Nama harus diisi.',
                 'email.required' => 'Email harus diisi.',

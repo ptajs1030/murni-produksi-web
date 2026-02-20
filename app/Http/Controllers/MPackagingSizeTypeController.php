@@ -30,6 +30,7 @@ class MPackagingSizeTypeController extends Controller
         $validated = $request->validate([
             'type_code' => ['required', 'string', 'max:10', 'unique:m_packaging_size_types,type_code'],
             'type_description' => ['required', 'string', 'max:50'],
+            'base_unit' => ['required', 'string', 'max:10'],
         ]);
         $validated['created_by'] = auth()->id();
 
@@ -45,6 +46,7 @@ class MPackagingSizeTypeController extends Controller
         $validated = $request->validate([
             'type_code' => ['required', 'string', 'max:10', 'unique:m_packaging_size_types,type_code,'.$packagingSizeType->id],
             'type_description' => ['required', 'string', 'max:50'],
+            'base_unit' => ['required', 'string', 'max:10'],
         ]);
         $validated['updated_by'] = auth()->id();
 

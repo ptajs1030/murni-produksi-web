@@ -57,45 +57,45 @@ class UserSeeder extends Seeder
             ]));
         }
 
-        // 3. Petugas (5 orang)
-        $petugasList = [
+        // 3. Operator (5 orang)
+        $operatorList = [
             [
                 'name' => 'Petugas Satu',
                 'email' => 'petugas1@mail.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('password123'),
             ],
             [
                 'name' => 'Petugas Dua',
                 'email' => 'petugas2@mail.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('password123'),
             ],
             [
                 'name' => 'Petugas Tiga',
                 'email' => 'petugas3@mail.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('password123'),
             ],
             [
                 'name' => 'Petugas Empat',
                 'email' => 'petugas4@mail.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('password123'),
             ],
             [
                 'name' => 'Petugas Lima',
                 'email' => 'petugas5@mail.com',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('password123'),
             ],
         ];
 
-        foreach ($petugasList as $petugas) {
-            User::create(array_merge($petugas, [
+        foreach ($operatorList as $operator) {
+            User::create(array_merge($operator, [
                 'email_verified_at' => now(),
-                'role' => 'petugas',
+                'role' => 'operator',
             ]));
         }
 
 
         $this->command->info('Seeder berhasil dijalankan!');
         $this->command->info('Total user yang dibuat: ' . User::count());
-        $this->command->info('Owner: 1, Admin: 4, Petugas: 5, User: 1');
+        $this->command->info('Owner: 1, Admin: 3, Petugas: 5, User: 1');
     }
 }

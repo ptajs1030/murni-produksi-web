@@ -66,8 +66,8 @@ class RepackController extends Controller
             $sourceStock->decrement('packaging_size_input', $validated['source_quantity']);
             CoreStockTransaction::create([
                 "product_id" => $validated['source_product_id'],
-                "quantity" => $validated['source_quantity'],
-                "transaction_type_id" => 2,
+                "quantity" => -$validated['source_quantity'],
+                "transaction_type_id" => 4,
                 "transaction_date" => now(),
                 "notes" => "Product di repack menjadi " . count($validated['target_products']) . " produk",
                 "created_by"=> auth()->user()->id
@@ -78,6 +78,14 @@ class RepackController extends Controller
                 
                 if ($targetStock) {
                     $targetStock->increment('packaging_size_input', $target['quantity']);
+                    CoreStockTransaction::create([
+                        "product_id" => $target['product_id'],
+                        "quantity" => $target['quantity'],
+                        "transaction_type_id" => 4,
+                        "transaction_date" => now(),
+                        "notes" => "Product di repack dari " . $validated['source_product_id']  ,
+                        "created_by"=> auth()->user()->id
+                ]);
                 } else {
                     toast_error("Product hasil repack tidak ditemukan");
                     return back();

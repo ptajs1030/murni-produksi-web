@@ -34,9 +34,9 @@ class User extends Authenticatable
         return in_array($this->role, ['admin', 'owner']);
     }
 
-    public function isPetugas(): bool
+    public function isOperator(): bool
     {
-        return in_array($this->role, ['petugas', 'admin', 'owner']);
+        return in_array($this->role, ['operator', 'admin', 'owner']);
     }
 
     /**

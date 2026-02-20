@@ -96,6 +96,7 @@ const openProductionModal = () => {
                             <tr>
                                 <th style="width: 60px">No.</th>
                                 <th>Nama Produk</th>
+                                <th>Batch</th>
                                 <th>Deskripsi (Bahan Baku)</th>
                                 <th style="width: 120px">Qty</th>
                                 <th style="width: 150px">PIC</th>
@@ -110,6 +111,9 @@ const openProductionModal = () => {
                                 <td>{{ getRowNumber(index) }}</td>
                                 <td>
                                     {{ log.product?.product_name || "-" }}
+                                </td>
+                                <td class="text-center">
+                                    {{ log.batch || "-" }}
                                 </td>
                                 <td>
                                     <small class="text-muted">

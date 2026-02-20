@@ -1,19 +1,20 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
-import { computed, ref, watch } from 'vue';
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import Modal from "@/Components/Modal.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import { useForm } from "@inertiajs/vue3";
+import { computed, ref, watch } from "vue";
 
-const emit = defineEmits(['saved']);
+const emit = defineEmits(["saved"]);
 const show = ref(false);
 const form = useForm({
     id: null,
     created_by: null,
-    type_code: '',
-    type_description: '',
+    type_code: "",
+    type_description: "",
+    base_unit: "",
 });
 
 // Computed property untuk menentukan apakah sedang editing
@@ -22,11 +23,11 @@ const isEditing = computed(() => form.id !== null);
 // Watcher untuk memastikan type_code selalu uppercase
 watch(
     () => form.type_code,
-    newValue => {
+    (newValue) => {
         if (newValue && newValue !== newValue.toUpperCase()) {
             form.type_code = newValue.toUpperCase();
         }
-    }
+    },
 );
 
 const open = (packagingSizeType = null) => {
@@ -35,6 +36,7 @@ const open = (packagingSizeType = null) => {
         form.created_by = packagingSizeType.created_by;
         form.type_code = packagingSizeType.type_code;
         form.type_description = packagingSizeType.type_description;
+        form.base_unit = packagingSizeType.base_unit;
     } else {
         form.reset();
     }
@@ -47,8 +49,12 @@ const close = () => {
 };
 
 // Function untuk mengubah type_code ke huruf besar
-const handleTypeCodeInput = event => {
+const handleTypeCodeInput = (event) => {
     form.type_code = event.target.value.toUpperCase();
+};
+
+const handleBaseUnitInput = (event) => {
+    form.base_unit = event.target.value.toUpperCase();
 };
 
 const submit = () => {
@@ -58,14 +64,14 @@ const submit = () => {
     const options = {
         onSuccess: () => {
             close();
-            emit('saved');
+            emit("saved");
         },
     };
 
     if (form.id) {
-        form.put(route('packaging-size-types.update', form.id), options);
+        form.put(route("packaging-size-types.update", form.id), options);
     } else {
-        form.post(route('packaging-size-types.store'), options);
+        form.post(route("packaging-size-types.store"), options);
     }
 };
 
@@ -77,7 +83,11 @@ defineExpose({ open, close });
         <form @submit.prevent="submit">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {{ isEditing ? 'Edit Tipe Ukuran Kemasan' : 'Tambah Tipe Ukuran Kemasan' }}
+                    {{
+                        isEditing
+                            ? "Edit Tipe Ukuran Kemasan"
+                            : "Tambah Tipe Ukuran Kemasan"
+                    }}
                 </h5>
                 <button type="button" class="btn-close" @click="close"></button>
             </div>
@@ -85,7 +95,10 @@ defineExpose({ open, close });
                 <div class="row">
                     <!-- Kode Tipe Ukuran Kemasan -->
                     <div class="col-12 mb-3">
-                        <InputLabel for="type_code" value="Kode Tipe Ukuran Kemasan" />
+                        <InputLabel
+                            for="type_code"
+                            value="Kode Tipe Ukuran Kemasan"
+                        />
                         <TextInput
                             id="type_code"
                             :model-value="form.type_code"
@@ -96,13 +109,19 @@ defineExpose({ open, close });
                             autofocus
                             style="text-transform: uppercase"
                         />
-                        <InputError :message="form.errors.type_code" class="text-danger mt-1" />
+                        <InputError
+                            :message="form.errors.type_code"
+                            class="text-danger mt-1"
+                        />
                     </div>
                 </div>
                 <div class="row">
                     <!-- Nama Tipe Ukuran Kemasan -->
                     <div class="col-12 mb-3">
-                        <InputLabel for="type_description" value="Nama Tipe Ukuran Kemasan" />
+                        <InputLabel
+                            for="type_description"
+                            value="Nama Tipe Ukuran Kemasan"
+                        />
                         <TextInput
                             id="type_description"
                             v-model="form.type_description"
@@ -110,20 +129,51 @@ defineExpose({ open, close });
                             class="form-control"
                             required
                         />
-                        <InputError :message="form.errors.type_description" class="text-danger mt-1" />
+                        <InputError
+                            :message="form.errors.type_description"
+                            class="text-danger mt-1"
+                        />
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Base Unit -->
+                    <div class="col-12 mb-3">
+                        <InputLabel for="base_unit" value="Base Unit" />
+                        <TextInput
+                            id="base_unit"
+                            v-model="form.base_unit"
+                            type="text"
+                            class="form-control"
+                            required
+                            @input="handleBaseUnitInput"
+                            style="text-transform: uppercase"
+                        />
+                        <InputError
+                            :message="form.errors.base_unit"
+                            class="text-danger mt-1"
+                        />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary me-2" @click="close">Batal</button>
-                <PrimaryButton :disabled="form.processing" class="btn btn-primary">
+                <button
+                    type="button"
+                    class="btn btn-secondary me-2"
+                    @click="close"
+                >
+                    Batal
+                </button>
+                <PrimaryButton
+                    :disabled="form.processing"
+                    class="btn btn-primary"
+                >
                     <span v-if="form.processing">
                         <i class="fas fa-spinner fa-spin me-1"></i>
                         Menyimpan...
                     </span>
                     <span v-else>
                         <i class="fas fa-save me-1"></i>
-                        {{ isEditing ? 'Update' : 'Simpan' }}
+                        {{ isEditing ? "Update" : "Simpan" }}
                     </span>
                 </PrimaryButton>
             </div>

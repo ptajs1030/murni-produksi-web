@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MStockOpnameProductsExport;
 use App\Models\CoreProduct;
 use App\Models\CoreStock;
 use App\Models\CoreStockOpname;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoreStockOpnameController extends Controller
 {
@@ -224,6 +226,13 @@ class CoreStockOpnameController extends Controller
         }
 
         return back();
+    }
+
+    public function export(Request $request)
+    {
+        $fileName = 'stock-opname-' . date('Y-m-d-His') . '.xlsx';
+
+        return Excel::download(new MStockOpnameProductsExport($request), $fileName);
     }
 }
 
