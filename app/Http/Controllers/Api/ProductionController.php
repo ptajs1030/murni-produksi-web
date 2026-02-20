@@ -2,47 +2,38 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductionCheckRequest;
 use App\Http\Requests\ProductionStoreRequest;
-use App\Models\LogProduksi;
 use App\Service\ProductionService;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\DTOs\ProductionCheckDTO;
+use App\DTOs\ProductionStoreDTO;
+use App\Models\CoreRecipe;
 
 class ProductionController extends Controller
 {
     public function __construct(
-        protected ProductionService $productionService
+        protected ProductionService $service
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index()
     {
-        $query = LogProduksi::with(['product', 'createdBy']);
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('product', function ($q) use ($search) {
-                    $q->where('product_name', 'like', "%{$search}%");
-                })->orWhereHas('createdBy', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
-            });
-        }
-
-        $productions = $query
-            ->orderByDesc('created_at')
-            ->paginate(10);
-
-        return response()->json($productions);
+        return CoreRecipe::with('product:id,product_name')
+            ->get()
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'product_name' => $r->product->product_name,
+            ]);
     }
-    public function store(ProductionStoreRequest $request): JsonResponse
-    {
-        $result = $this->productionService->store($request->validated());
 
-        return response()->json([
-            'message' => 'Produksi berhasil',
-            'data' => $result
-        ]);
+    public function check(ProductionCheckRequest $request)
+    {
+        $dto = ProductionCheckDTO::fromArray($request->validated());
+        return response()->json($this->service->check($dto));
+    }
+
+    public function store(ProductionStoreRequest $request)
+    {
+        $dto = ProductionStoreDTO::fromArray($request->validated());
+        return response()->json($this->service->store($dto));
     }
 }

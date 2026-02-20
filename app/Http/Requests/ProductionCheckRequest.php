@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Requests;
 
+use App\Models\CoreProduct;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
-class ProductionStoreRequest extends FormRequest
+class ProductionCheckRequest extends FormRequest
 {
     public function rules(): array
     {
