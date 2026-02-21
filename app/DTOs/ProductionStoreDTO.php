@@ -10,8 +10,8 @@ class ProductionStoreDTO
     
     public function __construct(
         public int $recipeId,
-        public int $quantity
-        //public int $userId,
+        public int $quantity,
+        public int $userId
     ) {}
 
     /**
@@ -20,9 +20,9 @@ class ProductionStoreDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            recipeId: (int) $data['recipe_id'],
+            recipeId: (int) $data['id'],
             quantity: (int) $data['quantity'],
-            userId: auth()->id(),
+            userId: auth()->id()
         );
     }
 }

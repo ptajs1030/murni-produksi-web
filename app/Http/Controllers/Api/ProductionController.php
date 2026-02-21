@@ -18,7 +18,7 @@ class ProductionController extends Controller
     public function index(Request $request)
     {
         return response()->json(
-            $this->service->index($request->get('search'))
+            $this->service->getProducts()
         );
     }
     public function production(Request $request)
@@ -34,7 +34,13 @@ class ProductionController extends Controller
     }
     public function store(ProductionStoreRequest $request)
     {
-        $dto = ProductionStoreDTO::fromArray($request->validated());
-        return response()->json($this->service->store($dto));
+        $validated = $request->validated();
+        $dto = ProductionStoreDTO::fromArray($validated);
+        $this->service->store($dto);
+
+        return response()->json([
+            'status' => true,
+            'data' => $validated,
+        ]);
     }
 }

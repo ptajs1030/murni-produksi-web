@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\DTOs\ProductionCheckDTO;
 use App\DTOs\ProductionStoreDTO;
+use App\Models\CoreProduct;
 use App\Models\CoreRecipe;
 use App\Models\CoreStock;
 use App\Models\CoreStockTransaction;
@@ -12,6 +13,11 @@ use Exception;
 
 class ProductionService
 {
+    public function getProducts()
+    {
+        return CoreProduct::where('product_type', 'Produk Jadi')->get();
+    }
+
     public function index(?string $search = null): array
 {
     $productions = LogProduksi::query()

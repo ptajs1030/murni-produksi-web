@@ -8,7 +8,7 @@ class ProductionStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recipe_id' => 'required|exists:core_recipes,id',
+            'id' => 'required|exists:core_recipes,id',
             'quantity'  => 'required|integer|min:1',
         ];
     }
