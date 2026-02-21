@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $admins = [
             [
                 'name' => 'admin',
-                'email' => 'admin@mail.com',
+                'email' => 'petugas1@mail.com',
                 'password' => bcrypt('password'),
             ],
             [
