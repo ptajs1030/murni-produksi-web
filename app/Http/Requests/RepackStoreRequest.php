@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -7,9 +8,8 @@ class RepackStoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // atau pakai policy
+        return true;
     }
-
     public function rules(): array
     {
         return [

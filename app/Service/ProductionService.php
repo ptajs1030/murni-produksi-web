@@ -58,6 +58,7 @@ class ProductionService
             'id',
             'product_id',
             'quantity',
+            'notes',
             'created_by',
             'created_at'
         ])
@@ -168,7 +169,7 @@ class ProductionService
                     'quantity' => -$needed,
                     'transaction_date' => now(),
                     'notes' => 'Digunakan untuk produksi '. $recipe->product->product_name. ' Batch ' . $batchNumber,
-                    //'created_by' => $dto->userId,
+                    'created_by' => $dto->userId,
                 ]);
                 $ingredientsLog[] =
                     $ingredient->product->product_name . '(' . $needed . ')';
@@ -187,7 +188,7 @@ class ProductionService
                 'quantity' => $dto->quantity,
                 'transaction_date' => now(),
                 'notes' => 'Produksi '. $productStock->product->product_name .' Batch '. $batchNumber,
-                //'created_by' => $dto->userId,
+                'created_by' => $dto->userId,
             ]);
 
             LogProduksi::create([

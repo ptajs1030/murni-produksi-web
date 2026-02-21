@@ -14,6 +14,14 @@ class CoreStockTransaction extends Model
     protected $table = 'core_stock_transactions';
 
     protected $guarded = [];
+    protected $fillable = [
+    'product_id',
+    'quantity',
+    'transaction_type_id',
+    'transaction_date',
+    'notes',
+    'created_by',
+];
 
     protected $casts = [
         'transaction_date' => 'datetime',

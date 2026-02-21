@@ -21,8 +21,8 @@ class ProductionStoreDTO
     {
         return new self(
             recipeId: (int) $data['recipe_id'],
-            quantity: (int) $data['quantity']
-            //userId: auth()->id(),
+            quantity: (int) $data['quantity'],
+            userId: auth()->id(),
         );
     }
 }
