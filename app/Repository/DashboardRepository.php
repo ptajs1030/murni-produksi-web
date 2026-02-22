@@ -15,4 +15,9 @@ class DashboardRepository
     {
         return (int) DB::table('core_stoks')->sum('in_stock');
     }
+
+    public function totalRepack(): int
+    {
+        return (int) DB::table('core_stock_transactions')->where('transaction_type_id', 4)->count();
+    }
 }

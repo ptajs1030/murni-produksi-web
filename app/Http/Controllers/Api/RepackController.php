@@ -7,12 +7,20 @@ use App\Http\Requests\RepackStoreRequest;
 use App\Service\RepackService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\RepackRequest;
+use App\Models\CoreProduct;
 
 class RepackController extends Controller
 {
     public function __construct(
         protected RepackService $service
     ) {}
+
+    public function getBahanBaku()
+    {
+        $products = CoreProduct::where('product_type', 'Produk Bahan Baku')->get();
+        return response()->json($products);
+    }
+
     public function index(RepackRequest $request): JsonResponse
 {
     return response()->json(
@@ -24,7 +32,7 @@ class RepackController extends Controller
         $this->service->handle($request->validated());
 
         return response()->json([
-            'message' => 'Repack berhasil dilakukan'
+            'message' => 'Repack finished! displaybar'
         ]);
     }
 }

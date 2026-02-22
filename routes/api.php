@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/production/check', [ProductionController::class, 'check']);
     Route::post('/repack', [RepackController::class, 'store']);
     Route::get('/repack', [RepackController::class, 'index']);
+    Route::get('/repack/bahan-baku', [RepackController::class, 'getBahanBaku']);
 });
 
 Route::post('/login', [LoginController::class, 'login']);

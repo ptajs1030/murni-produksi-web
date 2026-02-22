@@ -15,6 +15,7 @@ class DashboardService
         return [
             'total_barang' => $this->repository->totalBarang(),
             'total_stok' => $this->repository->totalStok(),
+            'total_repack' => $this->repository->totalRepack(),
         ];
     }
 }

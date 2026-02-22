@@ -20,9 +20,9 @@ class ProductionStoreDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            recipeId: (int) $data['recipe_id'],
+            recipeId: (int) $data['id'],
             quantity: (int) $data['quantity'],
-            userId: auth()->id(),
+            userId: auth()->id()
         );
     }
 }
