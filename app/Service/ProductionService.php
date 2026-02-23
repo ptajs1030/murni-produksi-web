@@ -53,49 +53,6 @@ class ProductionService
             ->orderByDesc('created_at')
             ->paginate(10);
         return [
-            'data' => $productions->items(), // 🔥 hanya data
-            'meta' => [
-                'current_page' => $productions->currentPage(),
-                'last_page'    => $productions->lastPage(),
-                'total'        => $productions->total(),
-            ]
-        ];
-    }
-    public function production(?string $search = null): array
-    {
-        $productions = CoreStockTransaction::query()
-            ->select([
-                'id',
-                'product_id',
-                'quantity',
-                'notes',
-                'created_by',
-                'created_at'
-            ])
-            ->where('transaction_type_id', 3)
-            ->with([
-                'product:id,product_name',
-                'createdBy:id,name'
-            ])
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-
-                    if (is_numeric($search)) {
-                        $q->orWhere('id', (int) $search);
-                    }
-
-                    $q->orWhereHas('product', function ($q) use ($search) {
-                        $q->where('product_name', 'like', "%{$search}%");
-                    });
-
-                    $q->orWhereHas('createdBy', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
-                    });
-                });
-            })
-            ->orderByDesc('created_at')
-            ->paginate(10);
-        return [
             'data' => $productions->items(),
             'meta' => [
                 'current_page' => $productions->currentPage(),
