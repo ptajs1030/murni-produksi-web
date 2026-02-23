@@ -43,6 +43,14 @@ class ProductionController extends Controller
     public function getIngredients(Request $request)
     {
         $recipe = CoreRecipe::with(['ingredients.product.packagingSize'])->find($request->id);
+
+        if ($recipe) {
+            foreach ($recipe->ingredients as $ingredient) {
+                $stock = CoreStock::where('product_id', $ingredient->product_id)->first();
+                $ingredient->stock_available = $stock ? $stock->packaging_size_input : 0;
+            }
+        }
+
         return response()->json($recipe);
     }
     public function store(Request $request){

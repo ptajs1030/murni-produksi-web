@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CoreProductTemplateExport;
 use App\Http\Requests\ProductRequest;
+use App\Imports\CoreProductImport;
 use App\Models\CoreProduct;
 use App\Models\CoreProductImage;
 use App\Models\CoreStock;
@@ -11,6 +13,7 @@ use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoreProductController extends Controller
 {
@@ -170,8 +173,6 @@ class CoreProductController extends Controller
                     ],
                 ];
             });
-   
-
 
         return response()->json([
             'product' => [
@@ -183,5 +184,46 @@ class CoreProductController extends Controller
             ],
             'stock_details' => $stockDetails,
         ]);
+    }
+
+    /**
+     * Download template Excel untuk import produk
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(new CoreProductTemplateExport(), 'template_import_produk.xlsx');
+    }
+
+    /**
+     * Import produk dari file Excel
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ]);
+
+        try {
+            $import = new CoreProductImport(auth()->id());
+            Excel::import($import, $request->file('file'));
+
+            $successCount = $import->getSuccessCount();
+            $errors = $import->getErrors();
+
+            if (count($errors) > 0 && $successCount > 0) {
+                toast_success("{$successCount} produk berhasil diimport.");
+            } elseif (count($errors) > 0 && $successCount === 0) {
+                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
+            } else {
+                toast_success("{$successCount} produk berhasil diimport.");
+            }
+
+            return redirect()->route('products.index');
+        } catch (\Exception $e) {
+            Log::error('Import product failed: ' . $e->getMessage());
+            toast_error('Import gagal: ' . $e->getMessage());
+
+            return back();
+        }
     }
 }

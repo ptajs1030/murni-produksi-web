@@ -72,6 +72,7 @@ class CoreRecipeController extends Controller
                 ]),
             ],
             'products' => CoreProduct::select('id', 'product_name')->get(),
+            'ingredients' => CoreProduct::where('product_type', 'Produk Bahan Baku')->select('id', 'product_name')->get(),
         ]);
     }
 

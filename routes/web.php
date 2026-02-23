@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
         ]);
 
         // Product Routes
+        Route::get('products/import-template', [CoreProductController::class, 'downloadTemplate'])->name('products.import-template');
+        Route::post('products/import', [CoreProductController::class, 'import'])->name('products.import');
         Route::resource('products', CoreProductController::class);
         Route::get('products/{product}/stock-details', [CoreProductController::class, 'stockDetails'])->name('products.stock-details');
 

@@ -1,15 +1,16 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import IngredientModal from './IngredientModal.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import IngredientModal from "./IngredientModal.vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 
 const props = defineProps({
     recipe: Object,
     products: Array,
+    ingredients: Array,
 });
 
 const form = useForm({
@@ -37,7 +38,7 @@ const openEditModal = (ingredient, index) => {
 };
 
 const saveIngredient = ({ product_id, quantity }) => {
-    const product = props.products.find(p => p.id === product_id);
+    const product = props.ingredients.find((p) => p.id === product_id);
     if (!product) return;
 
     if (isEditIngredient.value) {
@@ -47,9 +48,11 @@ const saveIngredient = ({ product_id, quantity }) => {
             quantity,
         };
     } else {
-        const exists = form.ingredients.some(i => i.product_id === product.id);
+        const exists = form.ingredients.some(
+            (i) => i.product_id === product.id,
+        );
         if (exists) {
-            alert('Bahan sudah ada');
+            alert("Bahan sudah ada");
             return;
         }
         form.ingredients.push({
@@ -61,12 +64,12 @@ const saveIngredient = ({ product_id, quantity }) => {
     showIngredientModal.value = false;
 };
 
-const removeIngredient = index => {
+const removeIngredient = (index) => {
     form.ingredients.splice(index, 1);
 };
 
 const submit = () => {
-    form.put(route('recipes.update', props.recipe.id));
+    form.put(route("recipes.update", props.recipe.id));
 };
 </script>
 
@@ -75,9 +78,14 @@ const submit = () => {
 
     <AuthenticatedLayout title="Edit Resep">
         <template #header>
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div
+                class="d-flex flex-wrap align-items-center justify-content-between gap-2"
+            >
                 <h2 class="mb-0 h5 text-dark fw-bold">Edit Resep</h2>
-                <Link :href="route('recipes.index')" class="btn btn-sm btn-outline-secondary">
+                <Link
+                    :href="route('recipes.index')"
+                    class="btn btn-sm btn-outline-secondary"
+                >
                     <i class="fas fa-arrow-left me-1"></i>
                     Kembali
                 </Link>
@@ -104,13 +112,18 @@ const submit = () => {
                                 {{ p.product_name }}
                             </option>
                         </select>
-                        <InputError class="mt-1" :message="form.errors.product_id" />
+                        <InputError
+                            class="mt-1"
+                            :message="form.errors.product_id"
+                        />
                     </div>
 
                     <!-- Bahan-bahan -->
                     <div class="mb-4">
                         <InputLabel value="Bahan-bahan" />
-                        <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                        <div
+                            class="d-flex flex-wrap gap-2 align-items-center mb-2"
+                        >
                             <button
                                 type="button"
                                 class="btn btn-outline-primary btn-sm"
@@ -121,14 +134,19 @@ const submit = () => {
                             </button>
                         </div>
 
-                        <ul v-if="form.ingredients.length" class="list-group list-group-flush rounded">
+                        <ul
+                            v-if="form.ingredients.length"
+                            class="list-group list-group-flush rounded"
+                        >
                             <li
                                 v-for="(ingredient, index) in form.ingredients"
                                 :key="`${ingredient.product_id}-${index}`"
                                 class="list-group-item d-flex justify-content-between align-items-center"
                             >
                                 <div>
-                                    <strong>{{ ingredient.product_name }}</strong>
+                                    <strong>{{
+                                        ingredient.product_name
+                                    }}</strong>
                                     <div class="text-muted small">
                                         Qty: {{ ingredient.quantity }}
                                     </div>
@@ -138,7 +156,9 @@ const submit = () => {
                                         type="button"
                                         class="btn btn-outline-warning"
                                         title="Edit"
-                                        @click="openEditModal(ingredient, index)"
+                                        @click="
+                                            openEditModal(ingredient, index)
+                                        "
                                     >
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -158,13 +178,19 @@ const submit = () => {
                             Belum ada bahan.
                         </div>
 
-                        <InputError class="mt-1" :message="form.errors.ingredients" />
+                        <InputError
+                            class="mt-1"
+                            :message="form.errors.ingredients"
+                        />
                     </div>
 
                     <hr class="my-4" />
 
                     <div class="d-flex flex-wrap gap-2">
-                        <PrimaryButton :disabled="form.processing" class="btn btn-primary">
+                        <PrimaryButton
+                            :disabled="form.processing"
+                            class="btn btn-primary"
+                        >
                             <span v-if="form.processing">
                                 <i class="fas fa-spinner fa-spin me-1"></i>
                                 Menyimpan...
@@ -174,7 +200,10 @@ const submit = () => {
                                 Update Resep
                             </span>
                         </PrimaryButton>
-                        <Link :href="route('recipes.index')" class="btn btn-outline-secondary">
+                        <Link
+                            :href="route('recipes.index')"
+                            class="btn btn-outline-secondary"
+                        >
                             <i class="fas fa-times me-1"></i>
                             Batal
                         </Link>
@@ -185,7 +214,7 @@ const submit = () => {
 
         <IngredientModal
             :show="showIngredientModal"
-            :products="products"
+            :products="ingredients"
             :initial-product-id="editingIngredient?.product_id ?? ''"
             :initial-quantity="editingIngredient?.quantity ?? ''"
             :is-edit="isEditIngredient"

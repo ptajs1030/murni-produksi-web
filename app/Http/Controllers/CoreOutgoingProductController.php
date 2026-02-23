@@ -27,8 +27,8 @@ class CoreOutgoingProductController extends Controller
         $query->orderByDesc('created_at');
         $outgoing = $query->paginate(10)->withQueryString();
 
-        $products = CoreProduct::select('id', 'product_name')->orderBy('product_name')->get();
-        $outTypes = MOutType::select('id', 'out_type_name')->orderBy('out_type_name')->get();
+        $products = CoreProduct::select('id', 'product_name')->where('product_type', 'Produk Jadi')->orderBy('product_name')->get();
+        $outTypes = MOutType::select('id', 'out_type_name')->where('id', 7)->get();
 
         return Inertia::render('CoreOutgoingProduct/Index', [
             'outgoing' => $outgoing,
@@ -48,14 +48,16 @@ class CoreOutgoingProductController extends Controller
         
         DB::beginTransaction();
         try {
-            $stock=CoreStock::where('product_id', $validated['product_id'])->first();
+            $stock = CoreStock::where('product_id', $validated['product_id'])->first();
             if (!$stock) {
+                DB::rollBack();
                 toast_error('Stok produk tidak ditemukan.');
-                return redirect()->route('outgoing-goods.index');
+                return back();
             }
             if ($stock->packaging_size_input < $validated['quantity']) {
-                toast_error('Stok produk tidak cukup.');
-                return redirect()->route('outgoing-goods.index');
+                DB::rollBack();
+                toast_error('Stock tidak cukup');
+                return back();
             }
 
             CoreOutgoingProduct::create([
@@ -75,19 +77,19 @@ class CoreOutgoingProductController extends Controller
             CoreStockTransaction::create([
                 'product_id' => $validated['product_id'],
                 'transaction_type_id' => 2,
-                'quantity' => $validated['quantity'],
-                'transaction_date'=>now(),
-                'notes'=>'Barang Keluar',
+                'quantity' => -$validated['quantity'],
+                'transaction_date' => now(),
+                'notes' => 'Barang Keluar',
                 'created_by' => auth()->id(),
                 'updated_by' => null,
                 'deleted_by' => null,
             ]);
-            toast_success('Barang keluar berhasil ditambahkan.');
             DB::commit();
+            toast_success('Barang keluar berhasil ditambahkan.');
             return redirect()->route('outgoing-goods.index');
         } catch (\Exception $e) {
             DB::rollBack();
-            toast_error('Gagal menambahkan barang keluar.'. $e->getMessage());
+            toast_error('Gagal menambahkan barang keluar.' . $e->getMessage());
             return redirect()->route('outgoing-goods.index');
         }
     }

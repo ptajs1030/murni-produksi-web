@@ -30,7 +30,6 @@ const submit = () => {
     });
 };
 
-// Get app settings from page props
 const page = usePage();
 const appLogo = computed(() => page.props.appSettings?.logo || '/resources/img/logo.png');
 const appName = computed(() => page.props.appSettings?.name || 'Murni Produksi');
