@@ -12,7 +12,8 @@ use App\Models\LogProduksi;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class TransactionType {
+class TransactionType
+{
     public const PRODUKSI = 3;
 }
 class ProductionService
@@ -29,6 +30,7 @@ class ProductionService
                 'id',
                 'product_id',
                 'batch',
+                'description',
                 'quantity',
                 'created_by',
                 'created_at'
@@ -52,14 +54,26 @@ class ProductionService
             })
             ->orderByDesc('created_at')
             ->paginate(10);
+        $data = collect($productions->items())->map(function ($item, $index) use ($productions) {
         return [
-            'data' => $productions->items(),
-            'meta' => [
-                'current_page' => $productions->currentPage(),
-                'last_page'    => $productions->lastPage(),
-                'total'        => $productions->total(),
-            ]
+            'no'          => ($productions->currentPage() - 1) * $productions->perPage() + $index + 1,
+            'nama_produk' => $item->product->product_name,
+            'batch'       => $item->batch,
+            'deskripsi'   => $item->description,
+            'qty'         => $item->quantity,
+            'pic'         => $item->createdBy?->name,
+            'tanggal'     => optional($item->created_at)->format('d M Y, H.i'),
         ];
+    });
+        return [
+        'data' => $data,
+        'meta' => [
+            'current_page' => $productions->currentPage(),
+            'last_page'    => $productions->lastPage(),
+            'total'        => $productions->total(),
+        ]
+    ];
+        
     }
     public function check(ProductionCheckDTO $dto): array
     {
