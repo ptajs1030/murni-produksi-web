@@ -19,9 +19,8 @@ class MTransactionTypeSeeder extends Seeder
         $types = [
             ['transaction_type_name' => 'IN', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
             ['transaction_type_name' => 'OUT', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
-            ['transaction_type_name' => 'PRODUKSI', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
-            ['transaction_type_name' => 'REPACK', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
-
+            ['transaction_type_name' => 'REPACK_IN', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
+            ['transaction_type_name' => 'REPACK_OUT', 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now],
         ];
 
         DB::table('m_transaction_types')->insert($types);
