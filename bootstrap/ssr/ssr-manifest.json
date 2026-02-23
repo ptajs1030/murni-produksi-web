@@ -123,12 +123,12 @@
     "/build/assets/Edit-DUdGLkmJ.js"
   ],
   "resources/js/Pages/CoreProducts/Index.vue": [
-    "/build/assets/Index-e8KLeN_i.js",
-    "/build/assets/Index-CG4viAG-.css"
+    "/build/assets/Index-CPHefouH.js",
+    "/build/assets/Index-CCD7liiA.css"
   ],
-  "resources/js/Pages/CoreProducts/Index.vue?vue&type=style&index=0&scoped=be63505b&lang.css": [
-    "/build/assets/Index-e8KLeN_i.js",
-    "/build/assets/Index-CG4viAG-.css"
+  "resources/js/Pages/CoreProducts/Index.vue?vue&type=style&index=0&scoped=3ecb47cb&lang.css": [
+    "/build/assets/Index-CPHefouH.js",
+    "/build/assets/Index-CCD7liiA.css"
   ],
   "resources/js/Pages/CoreProducts/ProductFormModal.vue": [
     "/build/assets/ProductFormModal-BHPjOjn3.js"
@@ -142,10 +142,10 @@
     "/build/assets/ProductStockDetail-EM_deAsh.css"
   ],
   "resources/js/Pages/CoreRecipe/Create.vue": [
-    "/build/assets/Create-Gg9WDLz5.js"
+    "/build/assets/Create-DQEe2cW6.js"
   ],
   "resources/js/Pages/CoreRecipe/Edit.vue": [
-    "/build/assets/Edit-DRGuMm7T.js"
+    "/build/assets/Edit-DLA9ThQB.js"
   ],
   "resources/js/Pages/CoreRecipe/Index.vue": [
     "/build/assets/Index-DMCUI1u1.js",
@@ -156,7 +156,7 @@
     "/build/assets/Index-vqvb0OM1.css"
   ],
   "resources/js/Pages/CoreRecipe/IngredientModal.vue": [
-    "/build/assets/IngredientModal-CPVP5ipK.js"
+    "/build/assets/IngredientModal-C7f8ko5F.js"
   ],
   "resources/js/Pages/CoreStockOpname/Index.vue": [
     "/build/assets/Index-DAQfLbE3.js",
@@ -290,20 +290,20 @@
     "/build/assets/Index-Kh0p_OdK.css"
   ],
   "resources/js/Pages/Production/Index.vue": [
-    "/build/assets/Index-DrUfNyAF.js",
+    "/build/assets/Index-mmpy-1D5.js",
     "/build/assets/Index-BhcQx6D3.css"
   ],
   "resources/js/Pages/Production/Index.vue?vue&type=style&index=0&scoped=f388d17f&lang.css": [
-    "/build/assets/Index-DrUfNyAF.js",
+    "/build/assets/Index-mmpy-1D5.js",
     "/build/assets/Index-BhcQx6D3.css"
   ],
   "resources/js/Pages/Production/ProductionModal.vue": [
-    "/build/assets/ProductionModal-Dv64h-LF.js",
-    "/build/assets/ProductionModal-Psv1HmjS.css"
+    "/build/assets/ProductionModal-e4aWyaMh.js",
+    "/build/assets/ProductionModal-BwmGfNJ_.css"
   ],
-  "resources/js/Pages/Production/ProductionModal.vue?vue&type=style&index=0&scoped=c30763b8&lang.css": [
-    "/build/assets/ProductionModal-Dv64h-LF.js",
-    "/build/assets/ProductionModal-Psv1HmjS.css"
+  "resources/js/Pages/Production/ProductionModal.vue?vue&type=style&index=0&scoped=62400fc4&lang.css": [
+    "/build/assets/ProductionModal-e4aWyaMh.js",
+    "/build/assets/ProductionModal-BwmGfNJ_.css"
   ],
   "resources/js/Pages/Profile/Edit.vue": [
     "/build/assets/Edit-DwTI9PKd.js"

@@ -84,6 +84,9 @@ const checkIngredients = async () => {
                 quantity_needed: ing.quantity * quantity,
                 product_id: ing.product_id,
                 unit: ing.product?.packaging_size?.packaging_size_code || "Pcs",
+                stock_available: ing.stock_available ?? 0,
+                stock_insufficient:
+                    (ing.stock_available ?? 0) < ing.quantity * quantity,
             }));
             isChecked.value = true;
         }
@@ -160,6 +163,10 @@ const submit = () => {
             }
         });
 };
+
+const hasStockWarning = computed(() =>
+    ingredientsPreview.value.some((i) => i.stock_insufficient),
+);
 
 defineExpose({ open, close });
 </script>
@@ -306,6 +313,23 @@ defineExpose({ open, close });
                                                 {{ ingredient.unit }}
                                             </div>
                                         </div>
+                                        <div
+                                            v-if="ingredient.stock_insufficient"
+                                            class="col-12 mt-1"
+                                        >
+                                            <small class="text-danger">
+                                                <i
+                                                    class="fas fa-exclamation-triangle me-1"
+                                                ></i>
+                                                Stock tidak cukup (tersedia:
+                                                {{
+                                                    formatNumberWithCommas(
+                                                        ingredient.stock_available,
+                                                    )
+                                                }}
+                                                {{ ingredient.unit }})
+                                            </small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -332,7 +356,7 @@ defineExpose({ open, close });
                     Batal
                 </button>
                 <PrimaryButton
-                    :disabled="form.processing || !isChecked"
+                    :disabled="form.processing || !isChecked || hasStockWarning"
                     class="btn btn-success"
                 >
                     <span v-if="form.processing">
