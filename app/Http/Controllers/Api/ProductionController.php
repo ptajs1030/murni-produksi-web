@@ -15,16 +15,16 @@ class ProductionController extends Controller
         protected ProductionService $service
     ) {}
 
-    public function index(Request $request)
+    public function getProducts()
     {
         return response()->json(
             $this->service->getProducts()
         );
     }
-    public function production(Request $request)
+    public function index(Request $request)
     {
         return response()->json(
-            $this->service->production($request->get('search'))
+            $this->service->index($request->get('search'))
         );
     }
     public function check(ProductionCheckRequest $request)

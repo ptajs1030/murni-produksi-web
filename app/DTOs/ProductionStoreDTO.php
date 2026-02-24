@@ -11,7 +11,7 @@ class ProductionStoreDTO
     public function __construct(
         public int $recipeId,
         public int $quantity,
-        public int $userId
+        public int $userId,
     ) {}
 
     /**
