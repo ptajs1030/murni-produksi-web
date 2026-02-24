@@ -188,11 +188,11 @@ class ProductionService
             ]);
 
             LogProduksi::create([
-                'product_id' => $recipe->product_id,
-                'batch' => $batchNumber,
-                'quantity' => $dto->quantity,
-                'description' => json_encode($ingredientsLog),
-                'created_by' => $dto->userId,
+                'product_id' => $dto->recipeId,
+                'batch'      => $batchNumber,
+                'quantity'   => $dto->quantity,
+                'description'=> $ingredientsLog
+                //'created_by' => $dto->userId,
             ]);
 
             return [

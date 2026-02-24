@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $admins = [
             [
                 'name' => 'admin',
-                'email' => 'petugas1@mail.com',
+                'email' => 'admin@mail.com',
                 'password' => bcrypt('password'),
             ],
             [
@@ -84,6 +84,11 @@ class UserSeeder extends Seeder
                 'email' => 'petugas5@mail.com',
                 'password' => bcrypt('password123'),
             ],
+            [
+                'name' => 'Operator Satu',
+                'email' => 'operator1@mail.com',
+                'password' => bcrypt('password123'),
+            ]
         ];
 
         foreach ($operatorList as $operator) {
