@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -9,7 +10,7 @@ use App\DTOs\ProductionCheckDTO;
 use App\DTOs\ProductionStoreDTO;
 use Illuminate\Http\Request;
 
-class ProductionController extends Controller
+class ProductionController extends BaseApiController
 {
     public function __construct(
         protected ProductionService $service
@@ -17,30 +18,42 @@ class ProductionController extends Controller
 
     public function getProducts()
     {
-        return response()->json(
-            $this->service->getProducts()
+        $products = $this->service->getProducts();
+        return $this->success(
+            data: $products,
+            message: 'Berhasil mengambil data produk'
         );
     }
+
     public function index(Request $request)
     {
-        return response()->json(
-            $this->service->index($request->get('search'))
+        $productions = $this->service->index($request->get('search'));
+        return $this->success(
+            data: $productions['data'],
+            message: 'Berhasil mengambil data produksi'
         );
     }
+
     public function check(ProductionCheckRequest $request)
     {
         $dto = ProductionCheckDTO::fromArray($request->validated());
-        return response()->json($this->service->check($dto));
+        $result = $this->service->check($dto);
+        
+        return $this->success(
+            data: $result,
+            message: 'Berhasil melakukan pengecekan produksi'
+        );
     }
+
     public function store(ProductionStoreRequest $request)
     {
         $validated = $request->validated();
         $dto = ProductionStoreDTO::fromArray($validated);
         $this->service->store($dto);
 
-        return response()->json([
-            'status' => true,
-            'data' => $validated,
-        ]);
+        return $this->success(
+            data: $validated,
+            message: 'Berhasil menyimpan data produksi'
+        );
     }
 }
