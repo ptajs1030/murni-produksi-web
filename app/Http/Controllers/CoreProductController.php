@@ -28,11 +28,14 @@ class CoreProductController extends Controller
         if ($request->has('search')) {
             $query->where('product_name', 'like', '%' . $request->input('search') . '%');
         }
+        if ($request->filled('product_type')) {
+            $query->where('product_type', $request->input('product_type'));
+        }
         $products = $query->paginate(10);
 
         return Inertia::render('CoreProducts/Index', [
             'products' => $products,
-            'filters' => $request->all(['search']),
+            'filters' => $request->all(['search', 'product_type']),
         ]);
     }
     public function create()

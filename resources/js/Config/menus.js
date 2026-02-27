@@ -113,17 +113,18 @@ export const MENUS = [
         roles: ["owner", "admin"],
     },
     {
-        name: "Produksi",
-        icon: "fas fa-industry",
-        route: "production.index",
-        roles: ["owner", "admin"],
-    },
-    {
         name: "Repack",
         icon: "fas fa-retweet",
         route: "repack.index",
         roles: ["owner", "admin"],
     },
+    {
+        name: "Produksi",
+        icon: "fas fa-industry",
+        route: "production.index",
+        roles: ["owner", "admin"],
+    },
+
     {
         name: "Stock Opname",
         icon: "fas fa-clipboard-check",
@@ -140,6 +141,16 @@ export const MENUS = [
         name: "Riwayat Transaksi",
         icon: "fas fa-history",
         route: "stock-transactions.index",
+        roles: ["owner", "admin"],
+    },
+    {
+        type: "divider",
+        name: "SYSTEM",
+    },
+    {
+        name: "Pengaturan",
+        icon: "fas fa-cog",
+        route: "settings.index",
         roles: ["owner", "admin"],
     },
 ];

@@ -5,13 +5,13 @@ import { Head, Link, router } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 const props = defineProps(["stockOpnames", "filters"]);
-const startDate = ref(props.filters.start_date || "");
-const endDate = ref(props.filters.end_date || "");
+const startDate = ref(props.filters.date_from || "");
+const endDate = ref(props.filters.date_to || "");
 
 const handleDateFilter = () => {
     const params = {};
-    if (startDate.value) params.start_date = startDate.value;
-    if (endDate.value) params.end_date = endDate.value;
+    if (startDate.value) params.date_from = startDate.value;
+    if (endDate.value) params.date_to = endDate.value;
     router.get("/stock-opnames", params, {
         preserveState: true,
         replace: true,

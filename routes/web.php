@@ -19,6 +19,8 @@ use App\Http\Controllers\ProductExpiredController;
 use App\Http\Controllers\ProductionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StockTransactionController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SystemOptimizeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -119,6 +121,16 @@ Route::middleware('auth')->group(function () {
 
         // Stock Transaction Routes
         Route::get('/stock-transactions', [StockTransactionController::class, 'index'])->name('stock-transactions.index');
+
+        // Settings Routes
+        Route::middleware('role:owner,admin')->group(function () {
+            Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+            Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+        });
+
+        // System Optimize Routes
+        Route::get('/system/optimize/status', [SystemOptimizeController::class, 'status'])->name('system.optimize.status');
+        Route::post('/system/optimize', [SystemOptimizeController::class, 'optimize'])->name('system.optimize.execute');
     });
 });
 
