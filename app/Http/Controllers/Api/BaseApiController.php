@@ -18,6 +18,18 @@ class BaseApiController extends Controller
         ], $status, $headers);
     }
 
+    protected function error(
+        string $message = 'Terjadi kesalahan',
+        int $status = 400,
+        $data = null
+    ): JsonResponse {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => $data,
+        ], $status);
+    }
+
     protected function resource(JsonResource $resource, int $status = 200): JsonResponse
     {
         // $resource->response()->setStatusCode($status)

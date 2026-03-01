@@ -26,13 +26,12 @@ class LoginController extends BaseApiController
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            // Sesuai dengan dokumentasi API
             return $this->success(
                 data: [
                     'token' => $token,
-                    'username' => $user->name, // atau username field
+                    'username' => $user->name,
                     'id' => $user->id,
-                    'role' => $user->role ?? 'user', // sesuaikan dengan field role
+                    'role' => $user->role ?? 'user',
                 ],
                 message: 'Login berhasil',
                 status: 200
