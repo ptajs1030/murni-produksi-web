@@ -9,6 +9,7 @@ import { computed, ref, watch } from "vue";
 
 const props = defineProps(["products", "filters"]);
 const search = ref(props.filters.search || "");
+const productType = ref(props.filters.product_type || "");
 const currentSort = ref("");
 const sortDirection = ref("");
 const stockDetailModalRef = ref(null);
@@ -36,6 +37,7 @@ watch(
     debounce((value) => {
         const params = {};
         if (value) params.search = value;
+        if (productType.value) params.product_type = productType.value;
 
         // Preserve existing sort
         const urlParams = new URLSearchParams(window.location.search);
@@ -48,6 +50,22 @@ watch(
         });
     }, 300),
 );
+
+// Watch for product type filter changes
+watch(productType, (value) => {
+    const params = {};
+    if (search.value) params.search = search.value;
+    if (value) params.product_type = value;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const existingSort = urlParams.get("sort");
+    if (existingSort) params.sort = existingSort;
+
+    router.get("/products", params, {
+        preserveState: true,
+        replace: true,
+    });
+});
 
 // Handle sorting
 const handleSort = (field) => {
@@ -69,6 +87,7 @@ const handleSort = (field) => {
 
     const params = { sort: sortValue };
     if (search.value) params.search = search.value;
+    if (productType.value) params.product_type = productType.value;
 
     router.get("/products", params, {
         preserveState: true,
@@ -123,6 +142,7 @@ const openStockDetail = (product) => {
 // Clear all filters
 const clearFilters = () => {
     search.value = "";
+    productType.value = "";
     currentSort.value = "";
     router.get(
         "/products",
@@ -136,7 +156,7 @@ const clearFilters = () => {
 
 // Check if any filters are active
 const hasActiveFilters = computed(() => {
-    return search.value || currentSort.value;
+    return search.value || currentSort.value || productType.value;
 });
 
 // Import modal
@@ -210,6 +230,15 @@ const submitImport = () => {
                             <i class="fas fa-plus me-1"></i>
                             Tambah Produk
                         </button>
+                    </div>
+                    <div class="col-md-2">
+                        <select v-model="productType" class="form-select">
+                            <option value="">Semua</option>
+                            <option value="Produk Bahan Baku">
+                                Bahan Baku
+                            </option>
+                            <option value="Produk Jadi">Produk Jadi</option>
+                        </select>
                     </div>
                 </div>
             </div>

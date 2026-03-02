@@ -161,6 +161,7 @@ class ProductionService
                         . ' Batch ' . $batchNumber,
                     'created_by' => $dto->userId,
                 ]);
+                
 
                 $ingredientsLog[] =
                     $ingredient->product->product_name . '(' . $needed . ')';
@@ -191,8 +192,8 @@ class ProductionService
                 'product_id' => $dto->recipeId,
                 'batch'      => $batchNumber,
                 'quantity'   => $dto->quantity,
-                'description'=> $ingredientsLog
-                //'created_by' => $dto->userId,
+                'description'=> $ingredientsLog,
+                'created_by' => $dto->userId,
             ]);
 
             return [

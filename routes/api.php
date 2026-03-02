@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\RepackController; // Added this line
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/me', [LoginController::class, 'user']);
     Route::post('/logout', [LoginController::class, 'logout']);
     Route::get('/production', [ProductionController::class, 'index']);
     Route::post('/production/check', [ProductionController::class, 'check']);

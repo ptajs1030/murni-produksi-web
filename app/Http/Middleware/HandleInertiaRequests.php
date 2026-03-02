@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,6 +30,8 @@ class HandleInertiaRequests extends Middleware
      */
    public function share(Request $request): array
 {
+    $settings = AppSetting::allCached();
+
     return array_merge(parent::share($request), [
         'auth' => [
             'user' => $request->user(),
@@ -36,7 +39,12 @@ class HandleInertiaRequests extends Middleware
         'flash' => fn () => [
             'toasts' => $request->session()->get('toasts'),
         ],
+        'appSettings' => [
+            'name' => $settings['app_name'] ?? 'Murni Produksi',
+            'logo' => $settings['app_logo'] ?? '/resources/img/logo.png',
+        ],
     ]);
 }
 
 }
+
