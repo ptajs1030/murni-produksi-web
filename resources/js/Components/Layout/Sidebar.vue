@@ -100,23 +100,8 @@ const canOptimize = computed(() => {
 // Optimize system functions
 const checkOptimizeStatus = async () => {
     try {
-        const response = await fetch(route("system.optimize.status"), {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        });
-
-        // Check if response is HTML (error page) instead of JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            console.warn(
-                "Status check received non-JSON response, possibly due to authentication issues",
-            );
-            return;
-        }
-
-        const data = await response.json();
-        optimizeStatus.value = data;
+        const response = await axios.get(route("system.optimize.status"));
+        optimizeStatus.value = response.data;
     } catch (error) {
         console.error("Failed to check optimize status:", error);
     }
@@ -138,47 +123,13 @@ const executeOptimize = async () => {
     showOptimizeConfirm.value = false;
 
     try {
-        // Get CSRF token
-        const csrfToken = document
-            .querySelector('meta[name="csrf-token"]')
-            ?.getAttribute("content");
-
-        if (!csrfToken) {
-            throw new Error(
-                "CSRF token not found. Please refresh the page and try again.",
-            );
-        }
-
-        const response = await fetch(route("system.optimize.execute"), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken,
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: JSON.stringify({
-                confirm: true,
-            }),
+        const response = await axios.post(route("system.optimize.execute"), {
+            confirm: true,
         });
 
-        // Check if response is HTML (error page) instead of JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const text = await response.text();
-            if (text.includes("<!DOCTYPE html>") || text.includes("419")) {
-                throw new Error(
-                    "CSRF token mismatch. Please refresh the page and try again.",
-                );
-            }
-            throw new Error(
-                "Server returned unexpected response. Please try again.",
-            );
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         if (data.success) {
-            // Show success message
             page.props.flash.toasts = [
                 {
                     type: "success",
@@ -186,12 +137,10 @@ const executeOptimize = async () => {
                 },
             ];
 
-            // Auto-refresh page after successful optimization
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
         } else {
-            // Show error message
             page.props.flash.toasts = [
                 {
                     type: "error",
@@ -204,16 +153,15 @@ const executeOptimize = async () => {
 
         let errorMessage = "An error occurred during system optimization";
 
-        if (error.message.includes("CSRF")) {
+        if (error.response?.status === 419) {
             errorMessage =
-                "CSRF token error: " +
-                error.message +
-                " Please refresh the page and try again.";
-        } else if (error.message.includes("Failed to fetch")) {
+                "Session expired. The page will reload automatically.";
+            setTimeout(() => window.location.reload(), 1500);
+        } else if (error.message?.includes("Network Error")) {
             errorMessage =
                 "Network error. Please check your connection and try again.";
-        } else if (error.message) {
-            errorMessage = error.message;
+        } else if (error.response?.data?.message) {
+            errorMessage = error.response.data.message;
         }
 
         page.props.flash.toasts = [
