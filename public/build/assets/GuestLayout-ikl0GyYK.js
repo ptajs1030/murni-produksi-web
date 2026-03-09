@@ -1,1 +1,0 @@
-import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{g as s,q as t,o as r}from"./app-CVnUkiaL.js";const c={},n={class:"min-vh-100"};function a(e,_){return r(),s("div",n,[t(e.$slots,"default")])}const l=o(c,[["render",a]]);export{l as G};
