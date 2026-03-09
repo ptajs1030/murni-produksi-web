@@ -46,22 +46,39 @@ const formProductType = [
     { name: "Produk Jadi" },
 ];
 
-// Computed property to calculate target selling date
+const MAX_SELLING_DAYS = 3650;
+
+
 const calculatedTargetDate = computed(() => {
     if (!targetSellingDays.value) return "";
-    const today = new Date();
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + parseInt(targetSellingDays.value));
-    return targetDate.toISOString().split("T")[0];
-});
-
-// Watch for changes in targetSellingDays and update form.target_selling_date
-watch(targetSellingDays, (newDays) => {
-    if (newDays) {
+    const days = parseInt(targetSellingDays.value);
+    if (isNaN(days) || days <= 0 || days > MAX_SELLING_DAYS) return "";
+    try {
         const today = new Date();
         const targetDate = new Date(today);
-        targetDate.setDate(today.getDate() + parseInt(newDays));
-        form.target_selling_date = targetDate.toISOString().split("T")[0];
+        targetDate.setDate(today.getDate() + days);
+        return targetDate.toISOString().split("T")[0];
+    } catch (e) {
+        return "";
+    }
+});
+
+
+watch(targetSellingDays, (newDays) => {
+    if (newDays) {
+        const days = parseInt(newDays);
+        if (isNaN(days) || days <= 0 || days > MAX_SELLING_DAYS) {
+            form.target_selling_date = null;
+            return;
+        }
+        try {
+            const today = new Date();
+            const targetDate = new Date(today);
+            targetDate.setDate(today.getDate() + days);
+            form.target_selling_date = targetDate.toISOString().split("T")[0];
+        } catch (e) {
+            form.target_selling_date = null;
+        }
     } else {
         form.target_selling_date = null;
     }
@@ -244,14 +261,25 @@ const submit = () => {
                                     v-model="targetSellingDays"
                                     type="number"
                                     min="1"
+                                    max="3650"
                                     class="form-control"
-                                    placeholder="Enter days from today"
+                                    placeholder="Enter days from today (max 3650)"
                                 />
                                 <InputError
                                     :message="form.errors.target_selling_date"
                                     class="text-danger mt-1"
                                 />
-                                <small class="text-muted"
+                                <small
+                                    v-if="
+                                        targetSellingDays &&
+                                        parseInt(targetSellingDays) >
+                                            MAX_SELLING_DAYS
+                                    "
+                                    class="text-danger"
+                                    >Maksimal {{ MAX_SELLING_DAYS }} hari (±10
+                                    tahun)</small
+                                >
+                                <small v-else class="text-muted"
                                     >Calculated date:
                                     {{ calculatedTargetDate }}</small
                                 >
