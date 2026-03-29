@@ -3,6 +3,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ProductSearchInput from "@/Components/ProductSearchInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { formatNumberWithCommas } from "@/utils/numberFormatter";
 import { useForm } from "@inertiajs/vue3";
@@ -255,22 +256,15 @@ defineExpose({ open, close });
                                     :for="`target-product-${index}`"
                                     value="Pilih Produk"
                                 />
-                                <select
+                                <ProductSearchInput
                                     :id="`target-product-${index}`"
                                     v-model="target.product_id"
-                                    class="form-select"
-                                    required
-                                >
-                                    <option value="">-- Pilih Produk --</option>
-                                    <option
-                                        v-for="p in getAvailableProducts(index)"
-                                        :key="p.id"
-                                        :value="p.id"
-                                    >
-                                        {{ p.product_unit_sku }} -
-                                        {{ p.product_name }}
-                                    </option>
-                                </select>
+                                    :items="getAvailableProducts(index)"
+                                    display-field="product_name"
+                                    secondary-field="product_unit_sku"
+                                    placeholder="Ketik untuk mencari produk..."
+                                    :required="true"
+                                />
                             </div>
                             <div class="col-md-4">
                                 <InputLabel

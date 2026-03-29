@@ -3,6 +3,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ProductSearchInput from "@/Components/ProductSearchInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
@@ -66,21 +67,14 @@ defineExpose({ open, close });
                             for="outgoing-product"
                             value="Nama Produk"
                         />
-                        <select
+                        <ProductSearchInput
                             id="outgoing-product"
                             v-model="form.product_id"
-                            class="form-select"
-                            required
-                        >
-                            <option value="">-- Pilih Produk --</option>
-                            <option
-                                v-for="p in products"
-                                :key="p.id"
-                                :value="p.id"
-                            >
-                                {{ p.product_name }}
-                            </option>
-                        </select>
+                            :items="products"
+                            display-field="product_name"
+                            placeholder="Ketik untuk mencari produk..."
+                            :required="true"
+                        />
                         <InputError
                             :message="form.errors.product_id"
                             class="text-danger mt-1"

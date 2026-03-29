@@ -3,6 +3,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ProductSearchInput from "@/Components/ProductSearchInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { formatNumberWithCommas } from "@/utils/numberFormatter";
 import { useForm } from "@inertiajs/vue3";
@@ -39,6 +40,14 @@ const getSelectedRecipe = computed(() => {
     if (!form.recipe_id) return null;
     return props.recipes.find((r) => r.id === parseInt(form.recipe_id));
 });
+
+// Flatten recipes for search display
+const recipeItems = computed(() =>
+    props.recipes.map((r) => ({
+        id: r.id,
+        product_name: r.product?.product_name || `Resep #${r.id}`,
+    })),
+);
 
 const open = () => {
     form.reset();
@@ -192,26 +201,14 @@ defineExpose({ open, close });
                                         for="recipe-select"
                                         value="Resep"
                                     />
-                                    <select
+                                    <ProductSearchInput
                                         id="recipe-select"
                                         v-model="form.recipe_id"
-                                        class="form-select"
-                                        required
-                                    >
-                                        <option value="">
-                                            -- Pilih Resep --
-                                        </option>
-                                        <option
-                                            v-for="recipe in recipes"
-                                            :key="recipe.id"
-                                            :value="recipe.id"
-                                        >
-                                            {{
-                                                recipe.product?.product_name ||
-                                                `Resep #${recipe.id}`
-                                            }}
-                                        </option>
-                                    </select>
+                                        :items="recipeItems"
+                                        display-field="product_name"
+                                        placeholder="Ketik untuk mencari resep..."
+                                        :required="true"
+                                    />
                                     <InputError
                                         :message="form.errors.recipe_id"
                                         class="text-danger mt-1"
