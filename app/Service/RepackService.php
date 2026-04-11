@@ -24,7 +24,7 @@ class RepackService
             });
         }
 
-        $products = $query->orderBy('product_name')->paginate(15);
+        $products = $query->orderBy('product_name')->get();
 
         $repack = /*CoreStockTransaction::query()
             ->select([
@@ -61,7 +61,16 @@ class RepackService
             ->select('id', 'product_name', 'product_unit_sku', 'm_packaging_size_id')
             ->orderByDesc('created_at')
             ->paginate(10);
-       /* $results = $repack->map(function ($item) {
+        $results = $products->map(function ($item) {
+            return [
+                'id'             => $item->id,
+                'productName'   => $item->product_name ?? '-',
+                'packagingSize' => $item->packagingSize->packaging_size_name ?? '-',
+                'productQty'      => $item->packaging_size_input ?? 0,
+                'productUnitSku' => $item->product_unit_sku ?? '-',
+            ];
+        });
+/* $results = $repack->map(function ($item) {
             return [
                 'id'             => $item->product_id,
                 'productName'   => $item->product->product_name ?? '-',
@@ -72,11 +81,13 @@ class RepackService
         });*/
 
         return [
-            'data' => $products,
+            'data' => $results,
+//            'data' => $products,
+//            'data' => $products->items(),
             'meta' => [
-                'current_page' => $products->currentPage(),
-                'last_page'    => $products->lastPage(),
-                'total'        => $products->total(),
+//                'current_page' => $products->currentPage(),
+//                'last_page'    => $products->lastPage(),
+//                'total'        => $products->total(),
             ]
         ];
     }
