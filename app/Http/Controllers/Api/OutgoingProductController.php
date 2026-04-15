@@ -58,9 +58,12 @@ class OutgoingProductController extends BaseApiController
      *
      * @tags Outgoing Products
      */
-    public function getProducts(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function getProducts(): JsonResponse
     {
-        return ProductSimpleResource::collection($this->service->getProducts());
+        return $this->success(
+            data: ProductSimpleResource::collection($this->service->getProducts()),
+            message: 'Berhasil mengambil data produk'
+        );
     }
 
     /**
