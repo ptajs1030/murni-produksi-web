@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductionController;
 use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\RepackController; // Added this line
+use App\Http\Controllers\Api\OutgoingProductController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -20,6 +21,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/repack', [RepackController::class, 'store']);
     Route::get('/repack', [RepackController::class, 'index']);
     Route::get('/repack/bahan-baku', [RepackController::class, 'getBahanBaku']);
+    
+    // Outgoing Products
+    Route::get('/outgoing-products', [OutgoingProductController::class, 'index']);
+    Route::get('/outgoing-products/products', [OutgoingProductController::class, 'getProducts']);
+    Route::get('/outgoing-products/out-types', [OutgoingProductController::class, 'getOutTypes']);
+    Route::post('/outgoing-products', [OutgoingProductController::class, 'store']);
 });
 
 Route::post('/login', [LoginController::class, 'login']);

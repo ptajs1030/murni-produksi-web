@@ -10,10 +10,29 @@ use Illuminate\Validation\ValidationException;
 class LoginController extends BaseApiController
 {
     /**
-     * Handle login request
-     * 
-     * @param Request $request
-     * @return JsonResponse
+     * Login
+     *
+     * Authenticate user and retrieve a sanctum bearer token.
+     *
+     * @tags Authentication
+     * @unauthenticated
+     * @bodyParam email string required User email address. Example: admin@murni.com
+     * @bodyParam password string required User password. Example: password
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Login berhasil",
+     *   "data": {
+     *     "token": "1|abcde12345",
+     *     "username": "Admin",
+     *     "id": 1,
+     *     "role": "admin"
+     *   }
+     * }
+     * @response 401 scenario="Invalid credentials" {
+     *   "success": false,
+     *   "message": "Invalid login details",
+     *   "data": null
+     * }
      */
     public function login(Request $request)
     {
@@ -45,10 +64,21 @@ class LoginController extends BaseApiController
     }
 
     /**
-     * Handle logout request
-     * 
-     * @param Request $request
-     * @return JsonResponse
+     * Logout
+     *
+     * Revoke the current user's bearer token.
+     *
+     * @tags Authentication
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Successfully logged out",
+     *   "data": null
+     * }
+     * @response 401 scenario="Unauthenticated" {
+     *   "success": false,
+     *   "message": "Unauthenticated.",
+     *   "data": null
+     * }
      */
     public function logout(Request $request)
     {
@@ -73,10 +103,22 @@ class LoginController extends BaseApiController
     }
 
     /**
-     * Get authenticated user data
-     * 
-     * @param Request $request
-     * @return JsonResponse
+     * Get authenticated user
+     *
+     * Retrieve the currently authenticated user's profile.
+     *
+     * @tags Authentication
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "User data retrieved successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Admin",
+     *     "email": "admin@murni.com",
+     *     "role": "admin",
+     *     "created_at": "2024-01-01T00:00:00.000000Z"
+     *   }
+     * }
      */
     public function user(Request $request)
     {

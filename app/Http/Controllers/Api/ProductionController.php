@@ -16,7 +16,14 @@ class ProductionController extends BaseApiController
         protected ProductionService $service
     ) {}
 
-    public function getProducts()
+    /**
+     * Get products for production
+     *
+     * Retrieve list of products available for production.
+     *
+     * @tags Production
+     */
+    public function getProducts(): \Illuminate\Http\JsonResponse
     {
         $products = $this->service->getProducts();
         return $this->success(
@@ -25,7 +32,15 @@ class ProductionController extends BaseApiController
         );
     }
 
-    public function index(Request $request)
+    /**
+     * List productions
+     *
+     * Retrieve a list of production records.
+     *
+     * @tags Production
+     * @queryParam search string Search by product name or other criteria. Example: Produk A
+     */
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $productions = $this->service->index($request->get('search'));
         return $this->success(
@@ -34,7 +49,14 @@ class ProductionController extends BaseApiController
         );
     }
 
-    public function check(ProductionCheckRequest $request)
+    /**
+     * Check production feasibility
+     *
+     * Validate if a production run is feasible given current stock levels.
+     *
+     * @tags Production
+     */
+    public function check(ProductionCheckRequest $request): \Illuminate\Http\JsonResponse
     {
         $dto = ProductionCheckDTO::fromArray($request->validated());
         $result = $this->service->check($dto);
@@ -45,7 +67,14 @@ class ProductionController extends BaseApiController
         );
     }
 
-    public function store(ProductionStoreRequest $request)
+    /**
+     * Store production record
+     *
+     * Create a new production record and update stock accordingly.
+     *
+     * @tags Production
+     */
+    public function store(ProductionStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $validated = $request->validated();
         $dto = ProductionStoreDTO::fromArray($validated);
