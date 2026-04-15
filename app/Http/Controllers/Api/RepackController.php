@@ -16,9 +16,18 @@ class RepackController extends BaseApiController
     ) {}
 
     /**
-     * Get Bahan Baku products
-     * 
-     * @return JsonResponse
+     * Get bahan baku products
+     *
+     * Retrieve the list of raw material (bahan baku) products available for repack.
+     *
+     * @tags Repack
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Berhasil mengambil data bahan baku",
+     *   "data": [
+     *     {"id": 1, "name": "Bahan Baku A", "code": "BB-001", "stock": 200, "unit": "kg"}
+     *   ]
+     * }
      */
     public function getBahanBaku(): JsonResponse
     {
@@ -33,10 +42,19 @@ class RepackController extends BaseApiController
     }
 
     /**
-     * Get Repack list
-     * 
-     * @param RepackRequest $request
-     * @return JsonResponse
+     * List repacks
+     *
+     * Retrieve a list of repack records.
+     *
+     * @tags Repack
+     * @queryParam search string Search by product name. Example: Produk A
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Berhasil mengambil data repack",
+     *   "data": [
+     *     {"id": 1, "product_id": 2, "quantity": 10, "created_at": "2024-01-01T00:00:00.000000Z"}
+     *   ]
+     * }
      */
     public function index(RepackRequest $request): JsonResponse
     {
@@ -49,10 +67,20 @@ class RepackController extends BaseApiController
     }
 
     /**
-     * Store new repack
-     * 
-     * @param RepackStoreRequest $request
-     * @return JsonResponse
+     * Store repack
+     *
+     * Create a new repack record. Deducts raw material (bahan baku) stock and adds to finished product stock.
+     *
+     * @tags Repack
+     * @response 200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Repack finished!",
+     *   "data": null
+     * }
+     * @response 422 scenario="Validation error" {
+     *   "message": "The given data was invalid.",
+     *   "errors": {}
+     * }
      */
     public function store(RepackStoreRequest $request): JsonResponse
     {
