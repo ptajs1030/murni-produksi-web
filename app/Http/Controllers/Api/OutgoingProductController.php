@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\OutgoingProductStoreRequest;
 use App\Service\OutgoingProductService;
+use App\Http\Resources\ProductSimpleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -57,12 +58,9 @@ class OutgoingProductController extends BaseApiController
      *
      * @tags Outgoing Products
      */
-    public function getProducts(): JsonResponse
+    public function getProducts(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        return $this->success(
-            data: $this->service->getProducts(),
-            message: 'Berhasil mengambil data produk'
-        );
+        return ProductSimpleResource::collection($this->service->getProducts());
     }
 
     /**

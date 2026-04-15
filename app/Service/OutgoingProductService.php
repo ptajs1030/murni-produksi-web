@@ -34,7 +34,7 @@ class OutgoingProductService
      */
     public function getProducts()
     {
-        return CoreProduct::select('id', 'product_name')
+        return CoreProduct::with(['stocks'])
             ->where('product_type', 'Produk Jadi')
             ->orderBy('product_name')
             ->get();
