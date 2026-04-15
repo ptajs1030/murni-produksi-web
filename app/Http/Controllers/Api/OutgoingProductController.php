@@ -30,21 +30,6 @@ class OutgoingProductController extends BaseApiController
     }
 
     /**
-     * Get options for outgoing product form
-     * 
-     * @return JsonResponse
-     */
-    public function getFormOptions(): JsonResponse
-    {
-        $options = $this->service->getFormOptions();
-        
-        return $this->success(
-            data: $options,
-            message: 'Berhasil mengambil opsi form'
-        );
-    }
-
-    /**
      * Store new outgoing product
      * 
      * @param OutgoingProductStoreRequest $request
@@ -56,6 +41,32 @@ class OutgoingProductController extends BaseApiController
 
         return $this->success(
             message: 'Barang keluar berhasil ditambahkan.'
+        );
+    }
+
+    /**
+     * Get products for outgoing form
+     * 
+     * @return JsonResponse
+     */
+    public function getProducts(): JsonResponse
+    {
+        return $this->success(
+            data: $this->service->getProducts(),
+            message: 'Berhasil mengambil data produk'
+        );
+    }
+
+    /**
+     * Get out types for outgoing form
+     * 
+     * @return JsonResponse
+     */
+    public function getOutTypes(): JsonResponse
+    {
+        return $this->success(
+            data: $this->service->getOutTypes(),
+            message: 'Berhasil mengambil data jenis pengeluaran'
         );
     }
 }

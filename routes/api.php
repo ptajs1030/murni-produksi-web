@@ -24,7 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Outgoing Products
     Route::get('/outgoing-products', [OutgoingProductController::class, 'index']);
-    Route::get('/outgoing-products/options', [OutgoingProductController::class, 'getFormOptions']);
+    Route::get('/outgoing-products/products', [OutgoingProductController::class, 'getProducts']);
+    Route::get('/outgoing-products/out-types', [OutgoingProductController::class, 'getOutTypes']);
     Route::post('/outgoing-products', [OutgoingProductController::class, 'store']);
 });
 

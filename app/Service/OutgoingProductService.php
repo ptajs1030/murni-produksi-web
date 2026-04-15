@@ -30,23 +30,24 @@ class OutgoingProductService
     }
 
     /**
-     * Get options for the form (products and outTypes)
+     * Get products for the form
      */
-    public function getFormOptions(): array
+    public function getProducts()
     {
-        $products = CoreProduct::select('id', 'product_name')
+        return CoreProduct::select('id', 'product_name')
             ->where('product_type', 'Produk Jadi')
             ->orderBy('product_name')
             ->get();
-            
-        $outTypes = MOutType::select('id', 'out_type_name')
+    }
+
+    /**
+     * Get out types for the form
+     */
+    public function getOutTypes()
+    {
+        return MOutType::select('id', 'out_type_name')
             ->where('id', 7)
             ->get();
-
-        return [
-            'products' => $products,
-            'outTypes' => $outTypes,
-        ];
     }
 
     /**
@@ -56,13 +57,13 @@ class OutgoingProductService
     {
         return DB::transaction(function () use ($data) {
             $stock = CoreStock::where('product_id', $data['product_id'])->first();
-            
+
             if (!$stock) {
                 throw ValidationException::withMessages([
                     'product_id' => 'Stok produk tidak ditemukan.'
                 ]);
             }
-            
+
             if ($stock->packaging_size_input < $data['quantity']) {
                 throw ValidationException::withMessages([
                     'quantity' => 'Stock tidak cukup'
