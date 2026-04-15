@@ -20,19 +20,6 @@ class OutgoingProductController extends BaseApiController
      *
      * @tags Outgoing Products
      * @queryParam search string Search by product name or out type. Example: rusak
-     * @response 200 scenario="Success" {
-     *   "success": true,
-     *   "message": "Berhasil mengambil data produk keluar",
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "product_id": 3,
-     *       "out_type_id": 1,
-     *       "quantity": 10,
-     *       "created_at": "2024-01-01T00:00:00.000000Z"
-     *     }
-     *   ]
-     * }
      */
     public function index(Request $request): JsonResponse
     {
@@ -53,15 +40,6 @@ class OutgoingProductController extends BaseApiController
      * @bodyParam product_id integer required ID of the product. Example: 3
      * @bodyParam out_type_id integer required ID of the outgoing type. Example: 1
      * @bodyParam quantity integer required Quantity to deduct from stock (min: 1). Example: 10
-     * @response 200 scenario="Success" {
-     *   "success": true,
-     *   "message": "Barang keluar berhasil ditambahkan.",
-     *   "data": null
-     * }
-     * @response 422 scenario="Validation error" {
-     *   "message": "Produk wajib diisi.",
-     *   "errors": {}
-     * }
      */
     public function store(OutgoingProductStoreRequest $request): JsonResponse
     {
@@ -78,13 +56,6 @@ class OutgoingProductController extends BaseApiController
      * Retrieve the list of available products to select when creating an outgoing entry.
      *
      * @tags Outgoing Products
-     * @response 200 scenario="Success" {
-     *   "success": true,
-     *   "message": "Berhasil mengambil data produk",
-     *   "data": [
-     *     {"id": 1, "name": "Produk A", "code": "PA-001", "stock": 50, "unit": "pcs"}
-     *   ]
-     * }
      */
     public function getProducts(): JsonResponse
     {
@@ -100,14 +71,6 @@ class OutgoingProductController extends BaseApiController
      * Retrieve the list of outgoing types (e.g., rusak, kadaluarsa, dll).
      *
      * @tags Outgoing Products
-     * @response 200 scenario="Success" {
-     *   "success": true,
-     *   "message": "Berhasil mengambil data jenis pengeluaran",
-     *   "data": [
-     *     {"id": 1, "name": "Rusak"},
-     *     {"id": 2, "name": "Kadaluarsa"}
-     *   ]
-     * }
      */
     public function getOutTypes(): JsonResponse
     {
