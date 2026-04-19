@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MRepackStatusTemplateExport;
+use App\Imports\MRepackStatusImport;
 use App\Models\MRepackStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MRepackStatusController extends Controller
 {
@@ -60,5 +64,40 @@ class MRepackStatusController extends Controller
         toast_warning('Status Repack berhasil dihapus.');
 
         return redirect()->route('repack-status.index');
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new MRepackStatusTemplateExport(), 'template_import_status_repack.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ]);
+
+        try {
+            $import = new MRepackStatusImport(auth()->id());
+            Excel::import($import, $request->file('file'));
+
+            $successCount = $import->getSuccessCount();
+            $errors = $import->getErrors();
+
+            if ($successCount > 0 && count($errors) > 0) {
+                toast_success("{$successCount} status repack berhasil diimport.");
+            } elseif (count($errors) > 0) {
+                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
+            } else {
+                toast_success("{$successCount} status repack berhasil diimport.");
+            }
+
+            return redirect()->route('repack-status.index');
+        } catch (\Exception $e) {
+            Log::error('Import repack status failed: ' . $e->getMessage());
+            toast_error('Import gagal: ' . $e->getMessage());
+
+            return back();
+        }
     }
 }
