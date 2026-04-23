@@ -16,9 +16,11 @@ class RepackController extends BaseApiController
     ) {}
 
     /**
-     * Get Bahan Baku products
-     * 
-     * @return JsonResponse
+     * Get bahan baku products
+     *
+     * Retrieve the list of raw material (bahan baku) products available for repack.
+     *
+     * @tags Repack
      */
     public function getBahanBaku(): JsonResponse
     {
@@ -33,10 +35,12 @@ class RepackController extends BaseApiController
     }
 
     /**
-     * Get Repack list
-     * 
-     * @param RepackRequest $request
-     * @return JsonResponse
+     * List repacks
+     *
+     * Retrieve a list of repack records.
+     *
+     * @tags Repack
+     * @queryParam search string Search by product name. Example: Produk A
      */
     public function index(RepackRequest $request): JsonResponse
     {
@@ -49,10 +53,11 @@ class RepackController extends BaseApiController
     }
 
     /**
-     * Store new repack
-     * 
-     * @param RepackStoreRequest $request
-     * @return JsonResponse
+     * Store repack
+     *
+     * Create a new repack record. Deducts raw material (bahan baku) stock and adds to finished product stock.
+     *
+     * @tags Repack
      */
     public function store(RepackStoreRequest $request): JsonResponse
     {
