@@ -25,6 +25,7 @@ class ProductStockResource extends JsonResource
                 'id' => $stock->id,
                 'quantity' => $stock->packaging_size_input,
                 'formatted_quantity' => $stock->formatted_quantity,
+                'formatted_quantity_smallest_unit' => $stock->packaging_size_input . ' ' . ($stock->product->packagingSize->sizeType->base_unit ?? 'unit'),
             ] : null,
             'category' => $this->category ? [
                 'id' => $this->category->id,
