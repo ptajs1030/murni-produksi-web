@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/repack', [RepackController::class, 'store']);
     Route::get('/repack', [RepackController::class, 'index']);
     Route::get('/repack/bahan-baku', [RepackController::class, 'getBahanBaku']);
+    Route::get('/products/stocks', [ProductController::class, 'stocks']);
 });
 
 Route::post('/login', [LoginController::class, 'login']);
