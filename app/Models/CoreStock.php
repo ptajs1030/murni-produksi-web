@@ -51,7 +51,7 @@ class CoreStock extends Model
      */
     public function getRealQuantityInSmallestUnitAttribute()
     {
-        if (! $this->product || ! $this->product->packagingSize) {
+        if (!$this->product || !$this->product->packagingSize) {
             return $this->packaging_size_input;
         }
 
@@ -67,8 +67,8 @@ class CoreStock extends Model
      */
     public function getFormattedQuantityAttribute()
     {
-        if (! $this->product || ! $this->product->packagingSize) {
-            return $this->packaging_size_input.' unit';
+        if (!$this->product || !$this->product->packagingSize) {
+            return $this->packaging_size_input . ' unit';
         }
 
         $packagingSize = $this->product->packagingSize;
@@ -77,10 +77,10 @@ class CoreStock extends Model
         if ($this->in_stock > 0) {
             $packagingUnit = $packagingSize->packaging_size_name ?? 'unit';
 
-            return $this->in_stock.' '.$packagingUnit.
-                   ($this->packaging_size_input > 0 ? ' + '.$this->packaging_size_input.' '.$baseUnit : '');
+            return $this->in_stock . ' ' . $packagingUnit .
+                ($this->packaging_size_input > 0 ? ' + ' . $this->packaging_size_input . ' ' . $baseUnit : '');
         }
 
-        return $this->packaging_size_input.' '.$baseUnit;
+        return $this->packaging_size_input . ' ' . $baseUnit;
     }
 }
