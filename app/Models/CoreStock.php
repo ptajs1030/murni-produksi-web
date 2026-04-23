@@ -77,8 +77,7 @@ class CoreStock extends Model
         if ($this->in_stock > 0) {
             $packagingUnit = $packagingSize->packaging_size_name ?? 'unit';
 
-            return $this->in_stock . ' ' . $packagingUnit .
-                ($this->packaging_size_input > 0 ? ' + ' . $this->packaging_size_input . ' ' . $baseUnit : '');
+            return $this->packaging_size_input . ' ' . $packagingUnit;
         }
 
         return $this->packaging_size_input . ' ' . $baseUnit;
