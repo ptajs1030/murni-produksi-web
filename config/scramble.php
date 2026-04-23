@@ -44,7 +44,7 @@ return [
         /*
          * Define the theme of the documentation. Available options are `light`, `dark`, and `system`.
          */
-        'theme' => 'dark',
+        'theme' => 'light',
 
         /*
          * Hide the `Try It` feature. Enabled by default.
@@ -129,7 +129,7 @@ return [
 
     'middleware' => [
         'web',
-        // RestrictedDocsAccess::class, // uncomment in production to restrict access
+        RestrictedDocsAccess::class,
     ],
 
     'extensions' => [],
