@@ -3,7 +3,7 @@ import Pagination from "@/Components/Pagination.vue";
 import TextInput from "@/Components/TextInput.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PackagingTypeFormModal from "@/Pages/MPackagingTypes/PackagingTypeFormModal.vue";
-import { Head, router } from "@inertiajs/vue3";
+import { Head, router, useForm } from "@inertiajs/vue3";
 import { debounce } from "lodash";
 import { computed, ref, watch } from "vue";
 
@@ -129,6 +129,33 @@ const clearFilters = () => {
 const hasActiveFilters = computed(() => {
     return search.value || currentSort.value;
 });
+
+// Import modal
+const showImportModal = ref(false);
+const importForm = useForm({ file: null });
+
+const openImportModal = () => {
+    showImportModal.value = true;
+    importForm.reset();
+    importForm.clearErrors();
+};
+
+const closeImportModal = () => {
+    showImportModal.value = false;
+    importForm.reset();
+    importForm.clearErrors();
+};
+
+const handleFileChange = (e) => {
+    importForm.file = e.target.files[0];
+};
+
+const submitImport = () => {
+    importForm.post(route("packaging-types.import"), {
+        forceFormData: true,
+        onSuccess: () => closeImportModal(),
+    });
+};
 </script>
 
 <template>
@@ -158,13 +185,22 @@ const hasActiveFilters = computed(() => {
                             Clear
                         </button>
                     </div>
-                    <button
-                        class="btn btn-primary"
-                        @click="openAddPackagingType"
-                    >
-                        <i class="fas fa-plus me-1"></i>
-                        Tambah Tipe Kemasan
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button
+                            class="btn btn-outline-success"
+                            @click="openImportModal"
+                        >
+                            <i class="fas fa-file-import me-1"></i>
+                            Import
+                        </button>
+                        <button
+                            class="btn btn-primary"
+                            @click="openAddPackagingType"
+                        >
+                            <i class="fas fa-plus me-1"></i>
+                            Tambah Tipe Kemasan
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -329,6 +365,47 @@ const hasActiveFilters = computed(() => {
             :packagingLevels="packagingLevels"
             @saved="router.reload()"
         />
+
+        <!-- Import Modal -->
+        <div v-if="showImportModal" class="modal-backdrop fade show" @click="closeImportModal"></div>
+        <div v-if="showImportModal" class="modal fade show d-block" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-import me-2"></i>
+                            Import Tipe Kemasan
+                        </h5>
+                        <button type="button" class="btn-close" @click="closeImportModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Download template terlebih dahulu, isi data sesuai format, lalu upload file yang sudah diisi.
+                        </div>
+                        <div class="mb-3">
+                            <a :href="route('packaging-types.import-template')" class="btn btn-outline-primary">
+                                <i class="fas fa-download me-1"></i>
+                                Download Template
+                            </a>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">File Excel</label>
+                            <input type="file" class="form-control" :class="{ 'is-invalid': importForm.errors.file }" accept=".xlsx,.xls" @change="handleFileChange" />
+                            <div v-if="importForm.errors.file" class="invalid-feedback">{{ importForm.errors.file }}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="closeImportModal">Batal</button>
+                        <button type="button" class="btn btn-success" @click="submitImport" :disabled="importForm.processing || !importForm.file">
+                            <span v-if="importForm.processing" class="spinner-border spinner-border-sm me-1"></span>
+                            <i v-else class="fas fa-upload me-1"></i>
+                            Upload & Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>
 

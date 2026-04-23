@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\MSupplierExport;
+use App\Exports\MSupplierTemplateExport;
+use App\Imports\MSupplierImport;
 use App\Models\MSupplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -62,11 +65,45 @@ class MSupplierController extends Controller
         return redirect()->route('suppliers.index');
     }
 
-    // Method export baru
     public function export(Request $request)
     {
         $fileName = 'suppliers-' . date('Y-m-d-His') . '.xlsx';
 
         return Excel::download(new MSupplierExport($request), $fileName);
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new MSupplierTemplateExport(), 'template_import_supplier.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ]);
+
+        try {
+            $import = new MSupplierImport(auth()->id());
+            Excel::import($import, $request->file('file'));
+
+            $successCount = $import->getSuccessCount();
+            $errors = $import->getErrors();
+
+            if ($successCount > 0 && count($errors) > 0) {
+                toast_success("{$successCount} supplier berhasil diimport.");
+            } elseif (count($errors) > 0) {
+                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
+            } else {
+                toast_success("{$successCount} supplier berhasil diimport.");
+            }
+
+            return redirect()->route('suppliers.index');
+        } catch (\Exception $e) {
+            Log::error('Import supplier failed: ' . $e->getMessage());
+            toast_error('Import gagal: ' . $e->getMessage());
+
+            return back();
+        }
     }
 }

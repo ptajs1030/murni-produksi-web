@@ -54,9 +54,32 @@ Route::middleware('auth')->group(function () {
         // User Management
         Route::resource('users', UserController::class);
 
-        // Export Routes for Master Data (must be before resources to avoid route conflict)
+        // Export & Import Routes for Master Data (must be before resources to avoid route conflict)
         Route::get('categories/export', [MCategoryController::class, 'export'])->name('categories.export');
+        Route::get('categories/import-template', [MCategoryController::class, 'downloadTemplate'])->name('categories.import-template');
+        Route::post('categories/import', [MCategoryController::class, 'import'])->name('categories.import');
+
         Route::get('suppliers/export', [MSupplierController::class, 'export'])->name('suppliers.export');
+        Route::get('suppliers/import-template', [MSupplierController::class, 'downloadTemplate'])->name('suppliers.import-template');
+        Route::post('suppliers/import', [MSupplierController::class, 'import'])->name('suppliers.import');
+
+        Route::get('packaging-size-levels/import-template', [MPackagingSizeLevelController::class, 'downloadTemplate'])->name('packaging-size-levels.import-template');
+        Route::post('packaging-size-levels/import', [MPackagingSizeLevelController::class, 'import'])->name('packaging-size-levels.import');
+
+        Route::get('packaging-size-types/import-template', [MPackagingSizeTypeController::class, 'downloadTemplate'])->name('packaging-size-types.import-template');
+        Route::post('packaging-size-types/import', [MPackagingSizeTypeController::class, 'import'])->name('packaging-size-types.import');
+
+        Route::get('packaging-types/import-template', [MPackagingTypeController::class, 'downloadTemplate'])->name('packaging-types.import-template');
+        Route::post('packaging-types/import', [MPackagingTypeController::class, 'import'])->name('packaging-types.import');
+
+        Route::get('property-items/import-template', [MPropertyItemController::class, 'downloadTemplate'])->name('property-items.import-template');
+        Route::post('property-items/import', [MPropertyItemController::class, 'import'])->name('property-items.import');
+
+        Route::get('repack-status/import-template', [MRepackStatusController::class, 'downloadTemplate'])->name('repack-status.import-template');
+        Route::post('repack-status/import', [MRepackStatusController::class, 'import'])->name('repack-status.import');
+
+        Route::get('packaging-sizes/import-template', [MPackagingSizeController::class, 'downloadTemplate'])->name('packaging-sizes.import-template');
+        Route::post('packaging-sizes/import', [MPackagingSizeController::class, 'import'])->name('packaging-sizes.import');
 
         // Master Data Routes
         Route::resources([

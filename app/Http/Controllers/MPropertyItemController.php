@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MPropertyItemTemplateExport;
+use App\Imports\MPropertyItemImport;
 use App\Models\MPropertyItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MPropertyItemController extends Controller
 {
@@ -69,4 +73,38 @@ class MPropertyItemController extends Controller
         return redirect()->route('property-items.index');
     }
 
+    public function downloadTemplate()
+    {
+        return Excel::download(new MPropertyItemTemplateExport(), 'template_import_sifat_benda.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ]);
+
+        try {
+            $import = new MPropertyItemImport(auth()->id());
+            Excel::import($import, $request->file('file'));
+
+            $successCount = $import->getSuccessCount();
+            $errors = $import->getErrors();
+
+            if ($successCount > 0 && count($errors) > 0) {
+                toast_success("{$successCount} sifat benda berhasil diimport.");
+            } elseif (count($errors) > 0) {
+                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
+            } else {
+                toast_success("{$successCount} sifat benda berhasil diimport.");
+            }
+
+            return redirect()->route('property-items.index');
+        } catch (\Exception $e) {
+            Log::error('Import property item failed: ' . $e->getMessage());
+            toast_error('Import gagal: ' . $e->getMessage());
+
+            return back();
+        }
+    }
 }
