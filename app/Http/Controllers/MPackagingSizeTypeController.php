@@ -89,12 +89,11 @@ class MPackagingSizeTypeController extends Controller
             $successCount = $import->getSuccessCount();
             $errors = $import->getErrors();
 
-            if ($successCount > 0 && count($errors) > 0) {
+            if ($successCount > 0) {
                 toast_success("{$successCount} tipe ukuran kemasan berhasil diimport.");
-            } elseif (count($errors) > 0) {
-                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
-            } else {
-                toast_success("{$successCount} tipe ukuran kemasan berhasil diimport.");
+            }
+            if (count($errors) > 0) {
+                toast_error('Beberapa baris gagal: ' . implode(' | ', array_slice($errors, 0, 5)));
             }
 
             return redirect()->route('packaging-size-types.index');

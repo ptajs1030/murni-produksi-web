@@ -28,12 +28,12 @@ class CoreProductImport implements ToCollection, WithHeadingRow
     protected $packagingSizes;
     protected $packagingTypes;
     protected $repackStatuses;
+    private int $sheetIndex = 0;
 
     public function __construct(int $userId)
     {
         $this->userId = $userId;
 
-        // Pre-load all master data for performance
         $this->categories = MCategory::pluck('id', 'category_code');
         $this->suppliers = MSupplier::pluck('id', 'supplier_code');
         $this->propertyItems = MPropertyItem::pluck('id', 'property_code');
@@ -44,10 +44,26 @@ class CoreProductImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
-        foreach ($rows as $index => $row) {
-            $rowNumber = $index + 2; // +2 because heading row is row 1
+        $currentSheet = $this->sheetIndex++;
 
-            // Skip completely empty rows
+        if ($rows->isEmpty()) {
+            return;
+        }
+
+        $expectedHeaders = ['product_name', 'product_type', 'category_code', 'supplier_code', 'expired_date', 'property_code', 'packaging_size_code', 'packaging_type_code', 'repack_code'];
+        $actualKeys = $rows->first()->keys()->toArray();
+        $missingHeaders = array_diff($expectedHeaders, $actualKeys);
+
+        if (!empty($missingHeaders)) {
+            if ($currentSheet === 0) {
+                $this->errors[] = 'Format file tidak sesuai template. Kolom tidak ditemukan: ' . implode(', ', $missingHeaders) . '. Gunakan file template yang didownload.';
+            }
+            return;
+        }
+
+        foreach ($rows as $index => $row) {
+            $rowNumber = $index + 2;
+
             if ($row->filter()->isEmpty()) {
                 continue;
             }
