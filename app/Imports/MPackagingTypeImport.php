@@ -16,6 +16,7 @@ class MPackagingTypeImport implements ToCollection, WithHeadingRow
     protected array $errors = [];
     protected int $userId;
     protected $packagingLevels;
+    private int $sheetIndex = 0;
 
     public function __construct(int $userId)
     {
@@ -25,6 +26,23 @@ class MPackagingTypeImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
+        $currentSheet = $this->sheetIndex++;
+
+        if ($rows->isEmpty()) {
+            return;
+        }
+
+        $expectedHeaders = ['packaging_type_code', 'packaging_type_name', 'level_code'];
+        $actualKeys = $rows->first()->keys()->toArray();
+        $missingHeaders = array_diff($expectedHeaders, $actualKeys);
+
+        if (!empty($missingHeaders)) {
+            if ($currentSheet === 0) {
+                $this->errors[] = 'Format file tidak sesuai template. Kolom tidak ditemukan: ' . implode(', ', $missingHeaders) . '. Gunakan file template yang didownload.';
+            }
+            return;
+        }
+
         foreach ($rows as $index => $row) {
             $rowNumber = $index + 2;
 
@@ -60,9 +78,14 @@ class MPackagingTypeImport implements ToCollection, WithHeadingRow
         }
 
         $code = trim($row['packaging_type_code']);
+        $name = trim($row['packaging_type_name']);
 
         if (strlen($code) > 5) {
             throw new \Exception("Kode Tipe Kemasan maksimal 5 karakter");
+        }
+
+        if (strlen($name) > 20) {
+            throw new \Exception("Nama Tipe Kemasan maksimal 20 karakter (saat ini " . strlen($name) . " karakter)");
         }
 
         if (MPackagingType::withTrashed()->where('packaging_type_code', $code)->exists()) {
@@ -79,7 +102,7 @@ class MPackagingTypeImport implements ToCollection, WithHeadingRow
         try {
             MPackagingType::create([
                 'packaging_type_code' => $code,
-                'packaging_type_name' => trim($row['packaging_type_name']),
+                'packaging_type_name' => $name,
                 'packaging_level_id'  => $levelId,
                 'created_by'          => $this->userId,
             ]);

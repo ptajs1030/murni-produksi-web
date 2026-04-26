@@ -18,6 +18,7 @@ class MPackagingSizeImport implements ToCollection, WithHeadingRow
     protected int $userId;
     protected $sizeTypes;
     protected $packagingLevels;
+    private int $sheetIndex = 0;
 
     public function __construct(int $userId)
     {
@@ -28,6 +29,23 @@ class MPackagingSizeImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
+        $currentSheet = $this->sheetIndex++;
+
+        if ($rows->isEmpty()) {
+            return;
+        }
+
+        $expectedHeaders = ['packaging_size_code', 'packaging_size_name', 'type_code', 'level_code', 'unit_conversion_value'];
+        $actualKeys = $rows->first()->keys()->toArray();
+        $missingHeaders = array_diff($expectedHeaders, $actualKeys);
+
+        if (!empty($missingHeaders)) {
+            if ($currentSheet === 0) {
+                $this->errors[] = 'Format file tidak sesuai template. Kolom tidak ditemukan: ' . implode(', ', $missingHeaders) . '. Gunakan file template yang didownload.';
+            }
+            return;
+        }
+
         foreach ($rows as $index => $row) {
             $rowNumber = $index + 2;
 

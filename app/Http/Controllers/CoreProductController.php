@@ -213,12 +213,11 @@ class CoreProductController extends Controller
             $successCount = $import->getSuccessCount();
             $errors = $import->getErrors();
 
-            if (count($errors) > 0 && $successCount > 0) {
+            if ($successCount > 0) {
                 toast_success("{$successCount} produk berhasil diimport.");
-            } elseif (count($errors) > 0 && $successCount === 0) {
-                toast_error('Import gagal. ' . implode(' | ', array_slice($errors, 0, 5)));
-            } else {
-                toast_success("{$successCount} produk berhasil diimport.");
+            }
+            if (count($errors) > 0) {
+                toast_error('Beberapa baris gagal: ' . implode(' | ', array_slice($errors, 0, 5)));
             }
 
             return redirect()->route('products.index');
