@@ -36,7 +36,7 @@ class MPackagingTypeController extends Controller
     {
         $validated = $request->validate([
             'packaging_type_code' => ['required', 'string', 'max:5', 'unique:m_packaging_types,packaging_type_code'],
-            'packaging_type_name' => ['required', 'string', 'max:20'],
+            'packaging_type_name' => ['required', 'string', 'max:255'],
             'packaging_level_id' => ['required', 'exists:m_packaging_levels,id'],
         ]);
         $validated['created_by'] = auth()->id();
@@ -52,7 +52,7 @@ class MPackagingTypeController extends Controller
     {
         $validated = $request->validate([
             'packaging_type_code' => ['required', 'string', 'max:5', 'unique:m_packaging_types,packaging_type_code,'.$packaging_type->id],
-            'packaging_type_name' => ['required', 'string', 'max:20'],
+            'packaging_type_name' => ['required', 'string', 'max:255'],
             'packaging_level_id' => ['required', 'exists:m_packaging_levels,id'],
         ]);
         $validated['updated_by'] = auth()->id();
