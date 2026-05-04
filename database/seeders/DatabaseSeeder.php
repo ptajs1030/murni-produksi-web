@@ -28,6 +28,6 @@ class DatabaseSeeder extends Seeder
             // CoreProductSeeder::class,
             // CoreStockSeeder::class,
             // CoreRecipeSeeder::class,
-        // ]);
+        ]);
     }
 }
