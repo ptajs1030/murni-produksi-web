@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class//,
+            UserSeeder::class,
             // MPackagingLevelSeeder::class,
             // MPackagingSizeTypeSeeder::class,
         // MCategorySeeder::class,
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // MPackagingTypeSeeder::class,
         // MRepackStatusSeeder::class,
         // MOutTypeSeeder::class,
-        // MTransactionTypeSeeder::class,
+ MTransactionTypeSeeder::class
             // CoreProductSeeder::class,
             // CoreStockSeeder::class,
             // CoreRecipeSeeder::class,
