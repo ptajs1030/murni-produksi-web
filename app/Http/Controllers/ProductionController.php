@@ -45,8 +45,11 @@ class ProductionController extends Controller
         $recipe = CoreRecipe::with(['ingredients.product.packagingSize'])->find($request->id);
 
         if ($recipe) {
+            $productIds = $recipe->ingredients->pluck('product_id')->toArray();
+            $stocks = CoreStock::whereIn('product_id', $productIds)->get()->keyBy('product_id');
+
             foreach ($recipe->ingredients as $ingredient) {
-                $stock = CoreStock::where('product_id', $ingredient->product_id)->first();
+                $stock = $stocks->get($ingredient->product_id);
                 $ingredient->stock_available = $stock ? $stock->packaging_size_input : 0;
             }
         }
@@ -74,9 +77,12 @@ class ProductionController extends Controller
                 $batchNumber = 1;
             }
 
+            $productIds = $recipe->ingredients->pluck('product_id')->toArray();
+            $stocks = CoreStock::whereIn('product_id', $productIds)->get()->keyBy('product_id');
+
             foreach ($recipe->ingredients as $ingredient) {
                 $needed = $ingredient->quantity * $validated['quantity'];
-                $stock = CoreStock::where('product_id', $ingredient->product_id)->first();
+                $stock = $stocks->get($ingredient->product_id);
                 $stockQty = $stock ? $stock->packaging_size_input : 0;
                 if ($stockQty < $needed) {
                     toast_error('Stock tidak cukup');

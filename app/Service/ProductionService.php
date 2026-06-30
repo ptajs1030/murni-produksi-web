@@ -83,14 +83,14 @@ class ProductionService
         $ingredientsData = [];
         $canProduce = true;
 
+        $productIds = $recipe->ingredients->pluck('product_id')->toArray();
+        $stocks = CoreStock::whereIn('product_id', $productIds)->get()->keyBy('product_id');
+
         foreach ($recipe->ingredients as $ingredient) {
 
             $needed = $ingredient->quantity * $dto->quantity;
 
-            $stock = CoreStock::where(
-                'product_id',
-                $ingredient->product_id
-            )->first();
+            $stock = $stocks->get($ingredient->product_id);
 
             $available = $stock?->packaging_size_input ?? 0;
             $enough = $available >= $needed;
@@ -133,14 +133,17 @@ class ProductionService
             $batchNumber = $lastBatch ? $lastBatch->batch + 1 : 1;
 
             $ingredientsLog = [];
+            $productIds = $recipe->ingredients->pluck('product_id')->toArray();
+            $stocks = CoreStock::whereIn('product_id', $productIds)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('product_id');
 
             foreach ($recipe->ingredients as $ingredient) {
 
                 $needed = $ingredient->quantity * $dto->quantity;
 
-                $stock = CoreStock::where('product_id', $ingredient->product_id)
-                    ->lockForUpdate()
-                    ->first();
+                $stock = $stocks->get($ingredient->product_id);
 
                 if (!$stock || $stock->packaging_size_input < $needed) {
                     throw new Exception(
@@ -172,7 +175,12 @@ class ProductionService
                 ->first();
 
             if (!$productStock) {
-                throw new Exception('Stock produk belum dibuat');
+                $productStock = CoreStock::create([
+                    'product_id' => $recipe->product_id,
+                    'packaging_size_input' => 0,
+                    'in_stock' => 0,
+                    'created_by' => $dto->userId ?? 1,
+                ]);
             }
 
             $productStock->increment('packaging_size_input', $dto->quantity);
@@ -183,13 +191,13 @@ class ProductionService
                 'quantity' => $dto->quantity,
                 'transaction_date' => now(),
                 'notes' => 'Produksi '
-                    . $productStock->product->product_name
+                    . $recipe->product->product_name
                     . ' Batch ' . $batchNumber,
                 'created_by' => $dto->userId,
             ]);
 
             LogProduksi::create([
-                'product_id' => $dto->recipeId,
+                'product_id' => $recipe->product_id,
                 'batch'      => $batchNumber,
                 'quantity'   => $dto->quantity,
                 'description'=> $ingredientsLog,
