@@ -61,11 +61,14 @@ class ProductionController extends Controller
 
         DB::beginTransaction();
         try {
-            $recipe = CoreRecipe::with('ingredients')->find($validated['recipe_id']);
+            $recipe = CoreRecipe::with(['ingredients.product', 'product'])->find($validated['recipe_id']);
+            if (!$recipe) {
+                throw new \Exception('Resep tidak ditemukan.');
+            }
             $ingredients = [];
 
-            if (LogProduksi::where('product_id', $validated['recipe_id'])->exists()) {
-                $batch = LogProduksi::where('product_id', $validated['recipe_id'])->latest()->first();
+            if (LogProduksi::where('product_id', $recipe->product_id)->exists()) {
+                $batch = LogProduksi::where('product_id', $recipe->product_id)->latest()->first();
                 $batchNumber = $batch->batch + 1;
             } else {
                 $batchNumber = 1;
@@ -74,13 +77,16 @@ class ProductionController extends Controller
             foreach ($recipe->ingredients as $ingredient) {
                 $needed = $ingredient->quantity * $validated['quantity'];
                 $stock = CoreStock::where('product_id', $ingredient->product_id)->first();
-                if ($stock->packaging_size_input < $needed) {
+                $stockQty = $stock ? $stock->packaging_size_input : 0;
+                if ($stockQty < $needed) {
                     toast_error('Stock tidak cukup');
                     return redirect()->back();
                 }
                 $ingredients[] = $ingredient->product->product_name.'('.$needed.')';
-                $stock->packaging_size_input -= $needed;
-                $stock->save();
+                if ($stock) {
+                    $stock->packaging_size_input -= $needed;
+                    $stock->save();
+                }
                 CoreStockTransaction::create([
                     'product_id' => $ingredient->product_id,
                     'transaction_type_id' => 3,
@@ -91,7 +97,15 @@ class ProductionController extends Controller
                 ]);
             }
 
-            $stockProduct = CoreStock::where('product_id', $validated['recipe_id'])->first();
+            $stockProduct = CoreStock::where('product_id', $recipe->product_id)->first();
+            if (!$stockProduct) {
+                $stockProduct = CoreStock::create([
+                    'product_id' => $recipe->product_id,
+                    'packaging_size_input' => 0,
+                    'in_stock' => 0,
+                    'created_by' => auth()->id() ?? 1,
+                ]);
+            }
             $stockProduct->packaging_size_input += $validated['quantity'];
             $stockProduct->save();
 
@@ -100,7 +114,7 @@ class ProductionController extends Controller
                 $batch->save();
             } else {
                 $batch = LogProduksi::create([
-                    'product_id' => $validated['recipe_id'],
+                    'product_id' => $recipe->product_id,
                     'batch' => $batchNumber,
                     'quantity' => $validated['quantity'],
                     'description' => $ingredients,
@@ -109,7 +123,7 @@ class ProductionController extends Controller
             }
 
             CoreStockTransaction::create([
-                'product_id' => $validated['recipe_id'],
+                'product_id' => $recipe->product_id,
                 'transaction_type_id' => 3,
                 'quantity' => $validated['quantity'],
                 'transaction_date' => now(),
