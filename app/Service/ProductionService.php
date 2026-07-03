@@ -77,8 +77,10 @@ class ProductionService
     }
     public function check(ProductionCheckDTO $dto): array
     {
+        $product=CoreProduct::findOrFail($dto->recipeId);
         $recipe = CoreRecipe::with('ingredients.product')
-            ->findOrFail($dto->recipeId);
+            ->where('product_id', $product->id)
+            ->first();
 
         $ingredientsData = [];
         $canProduce = true;
@@ -118,8 +120,10 @@ class ProductionService
     {
         return DB::transaction(function () use ($dto) {
 
+            $product=CoreProduct::findOrFail($dto->recipeId);
             $recipe = CoreRecipe::with('ingredients.product')
-                ->findOrFail($dto->recipeId);
+                ->where('product_id', $product->id)
+                ->first();
 
             if ($recipe->ingredients->isEmpty()) {
                 throw new Exception('Recipe tidak memiliki bahan');
