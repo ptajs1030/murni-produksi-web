@@ -15,19 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            MPackagingLevelSeeder::class,
-            MPackagingSizeTypeSeeder::class,
-        MCategorySeeder::class,
-        MSupplierSeeder::class,
-        MPropertyItemSeeder::class,
-        MPackagingSizeSeeder::class,
-        MPackagingTypeSeeder::class,
-        MRepackStatusSeeder::class,
-        MOutTypeSeeder::class,
-        MTransactionTypeSeeder::class,
-            CoreProductSeeder::class,
-            CoreStockSeeder::class,
-            CoreRecipeSeeder::class,
+            // MPackagingLevelSeeder::class,
+            // MPackagingSizeTypeSeeder::class,
+        // MCategorySeeder::class,
+        // MSupplierSeeder::class,
+        // MPropertyItemSeeder::class,
+        // MPackagingSizeSeeder::class,
+        // MPackagingTypeSeeder::class,
+        // MRepackStatusSeeder::class,
+        // MOutTypeSeeder::class,
+ MTransactionTypeSeeder::class
+            // CoreProductSeeder::class,
+            // CoreStockSeeder::class,
+            // CoreRecipeSeeder::class,
         ]);
     }
 }
